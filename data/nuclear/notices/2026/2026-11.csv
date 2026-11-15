@@ -732,3 +732,4 @@ Retour anticipé d'arrêt programmé, sous réserve d'accord du gestionnaire de 
 After its restart, the plant will gradually return by various load threshold to full power.
 The ramp-up period will take at least 48 hours.
 Early restart, subject to TSO agreement."
+EDF-05470_EDF_T_00341615,2,2026-11-15T15:12Z,17W100P100P0147F,ST LAURENT 1,915,PLANNED,FORESEEN_MAINTENANCE,INACTIVE,2026-11-15T14:00Z,2026-11-15T15:11Z,2026-11-15T14:00Z/2026-11-15T15:11Z/800/115,-
