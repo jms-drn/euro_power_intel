@@ -1,4 +1,13 @@
 {
- "generated_utc": "2026-11-16T09:01Z",
- "alerts": []
+ "generated_utc": "2026-11-16T09:27Z",
+ "alerts": [
+  {
+   "id": "nuc-delay-EDF-05470_EDF_T_00341014-3",
+   "date": "2026-11-16",
+   "level": "event",
+   "title": "Return pushed back 7 days: Cruas 2",
+   "detail": "Now due back 2026-12-02 (was 2026-11-25).",
+   "link": "nuclear/today"
+  }
+ ]
 }

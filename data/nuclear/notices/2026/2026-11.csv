@@ -806,3 +806,14 @@ Prochain palier : 273 MW
 Unit is currently ramping up by steps
 Next step : 273 MW."
 EDF-05470_EDF_T_00341682,2,2026-11-16T08:54Z,17W100P100P0131U,GRAVELINES 2,910,PLANNED,FORESEEN_MAINTENANCE,ACTIVE,2026-11-18T01:30Z,2026-11-18T18:30Z,2026-11-18T01:30Z/2026-11-18T18:30Z/585/325,-
+EDF-05470_EDF_T_00342225,1,2026-11-16T09:03Z,17W100P100P0119K,CRUAS 4,915,PLANNED,COMPLEMENTARY_INFORMATION,ACTIVE,2026-11-16T09:00Z,2026-11-19T12:30Z,2026-11-16T09:00Z/2026-11-19T12:30Z/10/905,"Remontée par paliers en cours
+Prochain palier : 95 MW
+--------
+Unit is currently ramping up by steps
+Next step : 98 MW."
+EDF-05470_EDF_T_00341014,3,2026-11-16T09:05Z,17W100P100P0116Q,CRUAS 2,915,PLANNED,COMPLEMENTARY_INFORMATION,ACTIVE,2026-11-25T19:30Z,2026-12-02T01:30Z,2026-11-25T19:30Z/2026-12-02T01:30Z/0/915,"En fonction d'analyses techniques, cette intervention pourra être annulée ou reportée.
+------------------------------
+Depending on technical assessments, this intervention may be cancelled or rescheduled."
+EDF-05470_EDF_T_00341015,3,2026-11-16T09:07Z,17W100P100P0118M,CRUAS 3,915,PLANNED,COMPLEMENTARY_INFORMATION,ACTIVE,2026-11-18T19:30Z,2026-11-25T01:30Z,2026-11-18T19:30Z/2026-11-25T01:30Z/0/915,"En fonction d'analyses techniques, cette intervention pourra être annulée ou reportée.
+------------------------------
+Depending on technical assessments, this intervention may be cancelled or rescheduled."
