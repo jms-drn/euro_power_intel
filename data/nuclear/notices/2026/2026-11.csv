@@ -843,3 +843,11 @@ Prochain palier : 440 MW
 --------
 Unit is currently ramping up by steps
 Next step : 440 MW."
+EC-EDF-05470-EDF-T-00095811,8,2026-11-16T12:54Z,17W100P100P0092E,BLAYAIS 1,910,PLANNED,COMPLEMENTARY_INFORMATION,ACTIVE,2026-08-28T22:00Z,2026-12-01T22:00Z,2026-08-28T22:00Z/2026-12-01T22:00Z/0/910,"After its restart, the plant will gradually return by various load thresholds to full power. The ramp-up period will take at least 48 hours.
+-------------------------------------
+Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance. La remontée durera au moins 48h."
+EDF-05470_EDF_T_00342224,4,2026-11-16T12:56Z,17W100P100P0105V,CATTENOM 4,1300,PLANNED,COMPLEMENTARY_INFORMATION,ACTIVE,2026-11-16T08:00Z,2026-11-20T02:00Z,2026-11-16T08:00Z/2026-11-20T02:00Z/285/1015,"Remontée par paliers en cours
+Prochain palier : 440 MW
+--------
+Unit is currently ramping up by steps
+Next step : 440 MW."
