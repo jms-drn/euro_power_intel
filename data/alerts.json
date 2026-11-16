@@ -1,6 +1,14 @@
 {
- "generated_utc": "2026-11-16T09:46Z",
+ "generated_utc": "2026-11-16T10:01Z",
  "alerts": [
+  {
+   "id": "nuc-new-EDF-05470_EDF_T_00342381",
+   "date": "2026-11-16",
+   "level": "event",
+   "title": "New unplanned outage: Cattenom 4",
+   "detail": "1,187 MW off from 2026-11-16 09:45 UTC to 2026-11-16 10:45 UTC.",
+   "link": "nuclear/today"
+  },
   {
    "id": "nuc-delay-EDF-05470_EDF_T_00341014-3",
    "date": "2026-11-16",
