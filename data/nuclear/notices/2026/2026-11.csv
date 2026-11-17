@@ -936,3 +936,8 @@ Le niveau de puissance pourra être réinterrogé si les conditions économiques
 --------
 Test at stable power.
 The power level will be reassessed depending on economic conditions."
+EDF-05470_EDF_T_00342170,7,2026-11-17T12:46Z,17W100P100P0090I,BELLEVILLE 1,1310,PLANNED,COMPLEMENTARY_INFORMATION,ACTIVE,2026-11-15T20:00Z,2026-11-19T18:00Z,2026-11-15T20:00Z/2026-11-19T18:00Z/650/660,"Remontée par paliers en cours
+Prochain palier : 985 MW
+--------
+Unit is currently ramping up by steps
+Next step : 985 MW."
