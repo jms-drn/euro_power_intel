@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-11-17T09:01Z",
+ "generated_utc": "2026-11-17T09:16Z",
  "alerts": [
   {
    "id": "fr_base-low-since-2026-11-17",
@@ -31,14 +31,6 @@
    "level": "event",
    "title": "New unplanned outage: Cattenom 4",
    "detail": "1,187 MW off from 2026-11-16 09:45 UTC to 2026-11-16 10:45 UTC.",
-   "link": "nuclear/today"
-  },
-  {
-   "id": "nuc-delay-EDF-05470_EDF_T_00341014-3",
-   "date": "2026-11-16",
-   "level": "event",
-   "title": "Return pushed back 7 days: Cruas 2",
-   "detail": "Now due back 2026-12-02 (was 2026-11-25).",
    "link": "nuclear/today"
   }
  ]
