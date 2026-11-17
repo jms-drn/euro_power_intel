@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-11-17T09:31Z",
+ "generated_utc": "2026-11-17T09:46Z",
  "alerts": [
   {
    "id": "fr_base-low-since-2026-11-17",
@@ -24,14 +24,6 @@
    "title": "Highest nuclear output (daily average) since 2 Apr 2026",
    "detail": "45.0 GW on 16 Nov 2026.",
    "link": "generation/explorer?subject=nuclear"
-  },
-  {
-   "id": "nuc-new-EDF-05470_EDF_T_00342381",
-   "date": "2026-11-16",
-   "level": "event",
-   "title": "New unplanned outage: Cattenom 4",
-   "detail": "1,187 MW off from 2026-11-16 09:45 UTC to 2026-11-16 10:45 UTC.",
-   "link": "nuclear/today"
   }
  ]
 }
