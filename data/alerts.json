@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-11-18T22:46Z",
+ "generated_utc": "2026-11-18T23:01Z",
  "alerts": [
   {
    "id": "fr_base-low-since-2026-11-19",
@@ -29,7 +29,7 @@
    "id": "neg-2026-11-19",
    "date": "2026-11-19",
    "level": "event",
-   "title": "Negative French prices tomorrow",
+   "title": "Negative French prices today",
    "detail": "1.75 hours below zero on 19 Nov 2026; lowest \u20ac-0.01/MWh.",
    "link": "prices/short"
   },
@@ -58,27 +58,11 @@
    "link": "nuclear/today"
   },
   {
-   "id": "wind-high-since-2026-11-17",
-   "date": "2026-11-17",
-   "level": "since",
-   "title": "Highest wind output (daily average) since 24 Nov 2024",
-   "detail": "18.3 GW on 17 Nov 2026.",
-   "link": "generation/explorer?subject=wind"
-  },
-  {
-   "id": "net_exports-high-since-2026-11-17",
-   "date": "2026-11-17",
-   "level": "since",
-   "title": "Highest net exports (daily average) since 2 Jun 2026",
-   "detail": "15.3 GW on 17 Nov 2026.",
-   "link": "flows/explorer?subject=net"
-  },
-  {
-   "id": "low_carbon-high-month-2026-11-17",
-   "date": "2026-11-17",
+   "id": "low_carbon-high-month-2026-11-18",
+   "date": "2026-11-18",
    "level": "month",
    "title": "Highest low-carbon share of generation for November",
-   "detail": "98.2% on 17 Nov 2026, the highest for any November since 2015.",
+   "detail": "98.3% on 18 Nov 2026, the highest for any November since 2015.",
    "link": "generation/explorer?subject=lowc&measure=share"
   }
  ]
