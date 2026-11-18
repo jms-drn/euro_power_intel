@@ -1,28 +1,26 @@
 name: Update RTE data
-
 # Normally started every 15 minutes by the Cloudflare refresh service
 # (worker/SETUP.md) and by the site's Refresh button. GitHub's own schedule
 # below is an hourly backup: GitHub delays or skips many scheduled runs.
+# The schedule is written as ranges (minute 47 of every hour, every day)
+# rather than the usual wildcard, which gets lost when pasted from chat.
 # Each run also re-checks the past 7 days, so a missed run loses nothing.
 # Can be started by hand from the Actions tab; re-running an old run is safe.
+# Spain (es_update.py) runs after France and never stops the France save.
 on:
   schedule:
-    - cron: "47 * * * *"
+    - cron: "47 0-23 1-31 1-12 0-6"
   workflow_dispatch:
-
 permissions:
   contents: write
-
 # The update and the backfill never run at the same time.
 concurrency:
   group: rte-data
   cancel-in-progress: false
-
 jobs:
   update:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-
     env:
       RTE_CLIENT_ID: ${{ secrets.RTE_CLIENT_ID }}
       RTE_CLIENT_SECRET: ${{ secrets.RTE_CLIENT_SECRET }}
@@ -31,7 +29,7 @@ jobs:
       RTE_UNAVAILABILITY_CLIENT_ID: ${{ secrets.RTE_UNAVAILABILITY_CLIENT_ID }}
       RTE_UNAVAILABILITY_CLIENT_SECRET: ${{ secrets.RTE_UNAVAILABILITY_CLIENT_SECRET }}
       ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
-
+      ESIOS_API_KEY: ${{ secrets.ESIOS_API_KEY }}
     steps:
       # Always start from the latest version of main, not the version the run
       # was first queued with (re-runs otherwise start from old data).
@@ -39,23 +37,20 @@ jobs:
         uses: actions/checkout@v5
         with:
           ref: main
-
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-
       - name: Install numpy (nuclear calculations)
         run: pip install --quiet numpy
-
       - name: Fetch RTE data and rebuild summaries
         run: python scripts/update.py
-
+      - name: Fetch Spain data
+        run: python scripts/es_update.py
       - name: Save updated data
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
           commit_data() {
             git add data
             if git diff --cached --quiet; then
@@ -64,24 +59,21 @@ jobs:
             fi
             git commit -q -m "Data update $(date -u '+%Y-%m-%d %H:%M') UTC"
           }
-
           commit_data || exit 0
-
           for attempt in 1 2 3; do
             if git push origin HEAD:main; then
               exit 0
             fi
-
             # Someone else saved changes first. The data files are generated,
             # so rather than merge them, start again from the latest version
             # and fetch the data again on top of it.
             echo "Push rejected (attempt $attempt); refreshing from the latest version"
-            sleep $((attempt * 10))
+            sleep 20
             git fetch origin main
             git reset --hard origin/main
             python scripts/update.py
+            python scripts/es_update.py
             commit_data || exit 0
           done
-
           echo "Could not save the data after 3 attempts"
           exit 1
