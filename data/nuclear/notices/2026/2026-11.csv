@@ -978,3 +978,11 @@ Prochain palier : 1300 MW
 --------
 Unit is currently ramping up by steps
 Next step : 1300 MW."
+EC-EDF-05470-EDF-T-00107362,8,2026-11-18T09:00Z,17W100P100P0140T,PALUEL 2,1330,PLANNED,COMPLEMENTARY_INFORMATION,ACTIVE,2026-11-20T21:30Z,2027-06-16T21:00Z,2026-11-20T21:30Z/2027-06-16T21:00Z/0/1330,"After its restart, the plant will gradually return by various load thresholds to full power. The ramp-up period will take at least 48 hours.
+-------------------------------------
+Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance. La remontée durera au moins 48h."
+EDF-05470_EDF_T_00327970,2,2026-11-18T09:03Z,17W100P100P0140T,PALUEL 2,1330,PLANNED,COMPLEMENTARY_INFORMATION,ACTIVE,2026-11-20T20:00Z,2026-11-20T21:30Z,2026-11-20T20:00Z/2026-11-20T21:30Z/100/1230,"Baisse avant arrêt
+Baisse à 100 MW : [1 h] – palier à 100 MW : [1 h] – baisse jusqu’à découplage
+---------------------------------------------------------------------------------------------------------------
+Unit Ramping down before outage
+Ramp down to 100 MW : [1 h] – threshold at 100 MW : [1 h] – ramp down until decoupling"
