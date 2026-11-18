@@ -1005,3 +1005,11 @@ Le niveau de puissance pourra être réinterrogé si les conditions économiques
 --------
 Test at stable power.
 The power level will be reassessed depending on economic conditions."
+EDF-05470_EDF_T_00341015,5,2026-11-18T15:08Z,17W100P100P0118M,CRUAS 3,915,PLANNED,COMPLEMENTARY_INFORMATION,DISMISSED,2026-11-18T17:00Z,2026-11-25T01:30Z,2026-11-18T17:00Z/2026-11-25T01:30Z/0/915,"En fonction d'analyses techniques, cette intervention pourra être annulée ou reportée.
+------------------------------
+Depending on technical assessments, this intervention may be cancelled or rescheduled."
+EDF-05470_EDF_T_00342224,8,2026-11-18T15:08Z,17W100P100P0105V,CATTENOM 4,1300,PLANNED,COMPLEMENTARY_INFORMATION,ACTIVE,2026-11-16T08:00Z,2026-11-20T16:30Z,2026-11-16T08:00Z/2026-11-20T16:30Z/480/820,"Remontée par paliers en cours
+Prochain palier : 900 MW
+--------
+Unit is currently ramping up by steps
+Next step : 900 MW."
