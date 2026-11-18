@@ -1,18 +1,17 @@
 // Site shell: home page and market switcher, sidebar pages, per-page tabs and
 // titles, Display menu, What's new and About panels, data status, automatic
-// refresh and the Refresh button.
-// Addresses: #home (or nothing) is the market picker; France keeps its
-// original addresses (#prices/explorer, also #fr/prices/explorer); Spain is
-// #es/prices/explorer and so on.
+// refresh, the Refresh button and the notification bell.
+// Addresses: #home (or nothing) is the market picker. Every other address
+// starts with its market: #fr/prices/explorer, #es/demand/today.
 // Code note: no asterisks here (chat formatting strips them when pasted).
 import { CHANGELOG, VERSION } from "./changelog.js";
 import { panelsWithin, refreshAllCharts, setExportBrand } from "./chart.js";
 import { CONFIG } from "./config.js";
 import { dataVersion, getStatus, parseUtc, setDataVersion, setLiveOverride } from "./data.js";
 import { flag } from "./flags.js";
-import { MARKETS, MARKET_ORDER, SITE_ACCENT, SITE_NAME, rememberMarket } from "./markets.js";
+import { MARKETS, MARKET_ORDER, SITE_ACCENT, SITE_LONG, SITE_NAME, rememberMarket } from "./markets.js";
 import { PALETTES, apply, settings, updateSettings } from "./settings.js";
-import { copyText, dateKey, el, fmtDateTime, fmtLongDate, fmtTime, lastPeriod, parisOffset, toast, writeHash } from "./util.js";
+import { copyText, dateKey, el, fmtDateTime, fmtLongDate, fmtTime, lastPeriod, parisOffset, setHashMarket, toast, writeHash } from "./util.js";
 apply();
 
 const MIN = 60000;
@@ -132,23 +131,24 @@ const ICONS = {
   hydro: '<path d="M12 3.2c3.3 4.2 6 7.6 6 10.8a6 6 0 0 1-12 0c0-3.2 2.7-6.6 6-10.8Z"/><path d="M9 15a3 3 0 0 0 3 3"/>',
   prices: '<path d="M17.5 6.5A6.5 6.5 0 1 0 17.5 17.5"/><path d="M4.5 10.5h9M4.5 13.5h9"/>',
   generation: '<path d="M13 2.5 5 13.5h6l-1 8 8-11h-6l1-8Z"/>',
-  flows: '<path d="M4 8.5h14M14.5 5l3.5 3.5-3.5 3.5M20 15.5H6M9.5 12 6 15.5 9.5 19"/>',
-  home: '<path d="M3.5 11 12 4l8.5 7M6 9.5V20h12V9.5"/>'
+  flows: '<path d="M4 8.5h14M14.5 5l3.5 3.5-3.5 3.5M20 15.5H6M9.5 12 6 15.5 9.5 19"/>'
 };
 const icon = key => `<svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[key] || ICONS.overview}</svg>`;
 
 // ---------- Addresses ----------
 
 const LEGACY_TABS = new Set(["today", "explorer", "accuracy", "outlook"]);
+const HOME = { market: "home", page: "", tab: "", params: new URLSearchParams() };
 function parseHash() {
   const raw = location.hash.replace(/^#/, "");
   const q = raw.indexOf("?");
   const path = q < 0 ? raw : raw.slice(0, q);
   const params = new URLSearchParams(q < 0 ? "" : raw.slice(q + 1));
   const segs = path.split("/").filter(Boolean);
-  if (!segs.length || segs.at(0) === "home") return { market: "home", page: "", tab: "", params };
-  let market = "fr";
-  if (SITE[segs.at(0)]) market = segs.shift();
+  if (!segs.length || segs.at(0) === "home") return HOME;
+  // Addresses without a market (older links) are read as France.
+  const market = MARKETS[segs.at(0)] ? segs.shift() : "fr";
+  if (!SITE[market]) return HOME;
   let page = segs.at(0) || "overview";
   let tab = segs.at(1) || "";
   if (market === "fr" && LEGACY_TABS.has(page)) { tab = page; page = "demand"; }
@@ -158,6 +158,7 @@ const prefixOf = market => (MARKETS[market] ? MARKETS[market].prefix : "");
 
 // ---------- Elements ----------
 
+const root = document.documentElement;
 const viewsRoot = document.getElementById("views");
 const footer = viewsRoot.querySelector("footer");
 const tabsEl = document.getElementById("tabs");
@@ -169,11 +170,11 @@ viewsRoot.insertBefore(pageBar, viewsRoot.firstChild);
 let current = null; // { market, page, tab, key }
 let status = null;
 
-// Brand in the sidebar and header now names the whole site and leads home.
+// The site name in the sidebar and header leads home.
 document.querySelectorAll(".side-brand, #page-brand").forEach(a => a.setAttribute("href", "#home"));
 const brandText = document.querySelector(".side-brand-text b");
 if (brandText) brandText.innerHTML = `${SITE_NAME} <em>${SITE_ACCENT}</em>`;
-document.querySelector(".side-brand")?.setAttribute("title", `${SITE_NAME} ${SITE_ACCENT}`);
+document.querySelector(".side-brand")?.setAttribute("title", `${SITE_LONG}: all markets`);
 
 // Market switcher, top right.
 const headerActions = document.querySelector(".header-actions");
@@ -203,14 +204,9 @@ async function getView(key, loader) {
   return views[key];
 }
 
-// ---------- Chrome: sidebar, header, tabs ----------
+// ---------- Chrome: sidebar, header, tabs, footer ----------
 
 function renderSideNav(market, page) {
-  if (market === "home") {
-    sideNav.innerHTML = `<a class="side-link active" href="#home" title="All markets" aria-current="page">${icon("home")}<span>All markets</span></a>`
-      + MARKET_ORDER.filter(k => MARKETS[k].live).map(k => `<a class="side-link side-market" href="#${MARKETS[k].prefix}overview" title="${MARKETS[k].name}">${flag(MARKETS[k].code, MARKETS[k].name)}<span>${MARKETS[k].name}</span></a>`).join("");
-    return;
-  }
   const pages = SITE[market];
   const m = MARKETS[market];
   sideNav.innerHTML = `<a class="side-link side-market-head" href="#home" title="All markets">${flag(m.code, m.name)}<span>${m.name}</span><span class="side-switch">All markets</span></a>`
@@ -247,20 +243,36 @@ marketButton.addEventListener("click", event => { event.stopPropagation(); toggl
 marketMenu.addEventListener("click", event => { if (event.target.closest("a")) toggleMarketMenu(false); });
 document.addEventListener("click", event => { if (!marketMenu.hidden && !marketMenu.contains(event.target)) toggleMarketMenu(false); });
 
+function renderFooter(market) {
+  const m = MARKETS[market];
+  footer.innerHTML = `<div>
+      <b>${SITE_LONG}</b> <span class="muted">v${VERSION} · by jms-drn</span><br>
+      Data: ${m.sources}
+    </div>
+    <div class="footer-links">
+      <button class="link" type="button" data-open="about">About the data</button>
+      <button class="link" type="button" data-open="whatsnew">What's new</button>
+      <a href="${CONFIG.repoUrl}" target="_blank" rel="noopener">Data files and code</a>
+    </div>`;
+}
+
 function renderChrome(market, page, tab) {
-  renderSideNav(market, page);
-  renderMarketButton(market);
-  document.body.dataset.market = market;
   if (market === "home") {
-    titleEl.innerHTML = `${SITE_NAME} <em>${SITE_ACCENT}</em>`;
-    document.title = `${SITE_NAME} ${SITE_ACCENT}`;
-    setExportBrand(`${SITE_NAME} ${SITE_ACCENT} by jms-drn`);
+    root.dataset.view = "home";
+    document.body.dataset.page = "home";
+    document.body.dataset.market = "home";
+    document.title = SITE_LONG;
+    setExportBrand(`${SITE_LONG} by jms-drn`);
     tabsEl.hidden = true;
     tabsEl.innerHTML = "";
-    document.body.dataset.page = "home";
     renderTabNav(null);
     return;
   }
+  delete root.dataset.view;
+  renderSideNav(market, page);
+  renderMarketButton(market);
+  renderFooter(market);
+  document.body.dataset.market = market;
   const config = cfgOf(market, page);
   const m = MARKETS[market];
   titleEl.innerHTML = `${m.name} Power <em>${config.accent}</em>`;
@@ -276,6 +288,13 @@ function renderChrome(market, page, tab) {
   renderTabNav(market, page, tab);
 }
 
+// A soft fade when a market is opened from the home page or the switcher.
+function enter(section) {
+  section.classList.remove("enter");
+  void section.offsetWidth;
+  section.classList.add("enter");
+}
+
 async function navigate(market, page, tab, params) {
   toggleMarketMenu(false);
   if (market === "home") {
@@ -283,40 +302,43 @@ async function navigate(market, page, tab, params) {
     const key = "home";
     document.querySelectorAll("[data-view]").forEach(section => section.classList.toggle("hidden", section.dataset.view !== key));
     sectionFor(key).classList.remove("hidden");
-    const changed = !current || current.key !== key;
     current = { market: "home", page: "", tab: "", key };
     pageBar.hidden = true;
     closeSidebar();
-    if (changed) window.scrollTo({ top: 0 });
+    window.scrollTo({ top: 0 });
     if (location.hash !== "#home") history.replaceState(null, "", "#home");
     const view = await getView(key, HOME_PAGE.load);
     await view.activate();
     return;
   }
-  const pages = SITE[market] || FR_PAGES;
+  const pages = SITE[market];
   if (!pages[page]) page = "overview";
   const tabs = Object.keys(pages[page].tabs);
   if (!tabs.includes(tab)) tab = tabs.at(0);
   const prefix = prefixOf(market);
   const key = `${prefix}${page}/${tab}`;
-  const pageChanged = !current || current.market !== market || current.page !== page;
+  const marketChanged = !current || current.market !== market;
+  const pageChanged = marketChanged || current.page !== page;
+  setHashMarket(market);
   renderChrome(market, page, tab);
   document.querySelectorAll("[data-view]").forEach(section => section.classList.toggle("hidden", section.dataset.view !== key));
-  sectionFor(key).classList.remove("hidden");
+  const section = sectionFor(key);
+  section.classList.remove("hidden");
+  if (marketChanged) enter(section);
   current = { market, page, tab, key };
   rememberMarket(market);
+  if (marketChanged) { bellTopic = "all"; renderBell(); }
   closeSidebar();
   if (pageChanged) window.scrollTo({ top: 0 });
   const view = await getView(key, pages[page].tabs[tab].load);
   if (current.key !== key) return;
   const hasParams = params && [...params.keys()].length;
-  const periodKey = prefix ? prefix.replace("/", "") : page;
   if (hasParams && view.setParams) view.setParams(params);
-  else if (!pageChanged && pages[page].sharePeriod && keepPeriod() && view.applyPeriod) view.applyPeriod(lastPeriod(periodKey));
+  else if (!pageChanged && pages[page].sharePeriod && keepPeriod() && view.applyPeriod) view.applyPeriod(lastPeriod(market + "/" + page));
   if (!view.writesHash) writeHash(prefix + (tabs.length > 1 ? `${page}/${tab}` : page), params ? Object.fromEntries(params) : null);
   await view.activate();
   if (current.key !== key) return;
-  decorate(sectionFor(key));
+  decorate(section);
   renderPageBar();
   requestAnimationFrame(() => window.dispatchEvent(new Event("resize")));
 }
@@ -383,13 +405,13 @@ function viewTitle(section) {
   const config = cfgOf(current.market, current.page);
   const tab = config.tabs[current.tab].label;
   const short = config.accent.replace(" Intelligence", "") || "Overview";
-  const lead = current.market === "fr" ? "" : MARKETS[current.market].code + " · ";
+  const lead = MARKETS[current.market].code + " · ";
   const base = Object.keys(config.tabs).length > 1 ? `${lead}${short} · ${tab}` : `${lead}${short}`;
   return panel?.title ? `${base}: ${panel.title}` : base;
 }
 
 async function renderPageBar() {
-  if (!current || current.market === "home" || current.page === "overview" && current.market === "fr") { pageBar.hidden = true; return; }
+  if (!current || current.market === "home" || (current.page === "overview" && current.market === "fr")) { pageBar.hidden = true; return; }
   const config = cfgOf(current.market, current.page);
   pageBar.hidden = false;
   const pinned = pins().some(p => p.hash === location.hash);
@@ -499,9 +521,9 @@ function closeSidebar() {
 document.getElementById("menu-button").addEventListener("click", openSidebar);
 scrim.addEventListener("click", closeSidebar);
 document.getElementById("collapse").addEventListener("click", () => {
-  const collapsed = document.documentElement.dataset.sidebar !== "collapsed";
-  if (collapsed) document.documentElement.dataset.sidebar = "collapsed";
-  else delete document.documentElement.dataset.sidebar;
+  const collapsed = root.dataset.sidebar !== "collapsed";
+  if (collapsed) root.dataset.sidebar = "collapsed";
+  else delete root.dataset.sidebar;
   try { localStorage.setItem("sidebar", collapsed ? "collapsed" : "open"); } catch (error) { void error; }
   setTimeout(() => window.dispatchEvent(new Event("resize")), 220);
 });
@@ -584,9 +606,12 @@ refreshButton.addEventListener("click", async () => {
 });
 
 // ---------- Notification bell ----------
-// Notable events (records, "highest since", new unplanned outages, negative
-// prices) from data/alerts.json. A count and a glow show unseen ones; there
-// is no sound and no pop-up. Seen alerts are remembered in this browser.
+// Notable events from data/alerts.json, for the market on screen only. An
+// alert belongs to a market by the start of its link ("es/..."; links with
+// no market are France's). All of the market's events show by default; the
+// topic buttons narrow them, and a topic can be muted. A count and a glow
+// show unseen ones; there is no sound and no pop-up. Seen alerts and muted
+// topics are remembered in this browser.
 
 const bellButton = document.getElementById("bell");
 const bellPanel = document.getElementById("bell-panel");
@@ -598,14 +623,19 @@ function seenAlerts() {
 }
 const TOPICS = { prices: "Prices", generation: "Generation", nuclear: "Nuclear", flows: "Flows", demand: "Demand" };
 let bellTopic = "all";
-const topicOf = a => a.link.replace(/^es\//, "").split(/[/?]/).at(0);
+const marketOf = a => { const s = a.link.split("/").at(0); return MARKETS[s] ? s : "fr"; };
+const pathOf = a => (MARKETS[a.link.split("/").at(0)] ? a.link.slice(a.link.indexOf("/") + 1) : a.link);
+const topicOf = a => pathOf(a).split(/[/?]/).at(0);
+const hrefOf = a => "#" + marketOf(a) + "/" + pathOf(a);
+const bellMarket = () => (current && current.market !== "home" ? current.market : "fr");
 function muted() {
   try { return new Set(JSON.parse(localStorage.getItem("mutedTopics") || "[]")); } catch (error) { return new Set(); }
 }
 function recentAlerts({ includeMuted = false } = {}) {
   const cutoff = new Date(Date.now() - 345600000).toISOString().slice(0, 10);
   const off = muted();
-  return alerts.filter(a => a.date >= cutoff && (includeMuted || !off.has(topicOf(a))));
+  const m = bellMarket();
+  return alerts.filter(a => a.date >= cutoff && marketOf(a) === m && (includeMuted || !off.has(topicOf(a))));
 }
 function renderBell() {
   const seen = seenAlerts();
@@ -613,7 +643,8 @@ function renderBell() {
   bellCount.textContent = unseen > 9 ? "9+" : String(unseen);
   bellCount.hidden = !unseen;
   bellButton.classList.toggle("glow", unseen > 0);
-  bellButton.title = unseen ? `${unseen} new notable ${unseen === 1 ? "event" : "events"}` : "Notable events";
+  const name = MARKETS[bellMarket()].name;
+  bellButton.title = unseen ? `${unseen} new notable ${unseen === 1 ? "event" : "events"} in ${name}` : `Notable events in ${name}`;
 }
 async function loadBell() {
   try {
@@ -628,16 +659,18 @@ const LEVEL = { record: "Record", month: "Month record", since: "Highest/lowest 
 function renderBellPanel() {
   const seen = seenAlerts();
   const off = muted();
+  const m = MARKETS[bellMarket()];
   const all = recentAlerts({ includeMuted: true });
   const topics = [...new Set(all.map(topicOf))].filter(t => TOPICS[t]);
   const list = all.filter(a => (bellTopic === "all" ? !off.has(topicOf(a)) : topicOf(a) === bellTopic));
   const isMuted = bellTopic !== "all" && off.has(bellTopic);
-  bellPanel.innerHTML = `<div class="bell-head"><b>Notable events</b><span class="muted">Past 4 days</span></div>
+  const empty = m.code === "FR" ? "Nothing notable in the past four days." : `Nothing notable for ${m.name} in the past four days.`;
+  bellPanel.innerHTML = `<div class="bell-head"><b>Notable events · ${m.name}</b><span class="muted">Past 4 days</span></div>
     ${topics.length > 1 || off.size ? `<div class="bell-filters">${["all", ...topics].map(t => `<button type="button" data-topic="${t}" aria-pressed="${bellTopic === t}">${t === "all" ? "All" : TOPICS[t]}${off.has(t) ? " (muted)" : ""}</button>`).join("")}
       ${bellTopic !== "all" ? `<button type="button" class="bell-mute" data-mute="${bellTopic}">${isMuted ? "Unmute" : "Mute"} ${TOPICS[bellTopic]}</button>` : ""}</div>` : ""}
-    ${list.length ? `<ul class="bell-list">${list.map(a => `<li><a href="#${a.link}" class="${seen.has(a.id) ? "" : "unseen"}"><span class="bell-level ${a.level}">${LEVEL[a.level] || ""}</span><b>${a.title}</b><span>${a.detail}</span><span class="muted">${fmtDateShortIso(a.date)} · open the data →</span></a></li>`).join("")}</ul>`
-      : `<p class="muted bell-empty">Nothing notable in the past four days.</p>`}
-    <p class="bell-foot muted">France for now: records, the highest or lowest values for a while (at least a week for prices, a month for generation), new unplanned nuclear outages and negative prices.</p>`;
+    ${list.length ? `<ul class="bell-list">${list.map(a => `<li><a href="${hrefOf(a)}" class="${seen.has(a.id) ? "" : "unseen"}"><span class="bell-level ${a.level}">${LEVEL[a.level] || ""}</span><b>${a.title}</b><span>${a.detail}</span><span class="muted">${fmtDateShortIso(a.date)} · open the data →</span></a></li>`).join("")}</ul>`
+      : `<p class="muted bell-empty">${empty}</p>`}
+    <p class="bell-foot muted">Records, the highest or lowest values for a while (at least a week for prices, a month for generation), negative prices${m.code === "FR" ? " and new unplanned nuclear outages" : ""}.</p>`;
 }
 function fmtDateShortIso(d) {
   return new Intl.DateTimeFormat("en-GB", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" }).format(Date.parse(`${d}T12:00:00Z`));
@@ -680,7 +713,7 @@ function swatches(palette, theme) {
 }
 function renderDisplayMenu() {
   const s = settings();
-  const theme = document.documentElement.dataset.theme;
+  const theme = root.dataset.theme;
   const seg = (key, options) => `<div class="segmented" role="group">${options.map(o =>
     `<button type="button" data-set="${key}" data-value="${o.at(0)}" aria-pressed="${String(s[key]) === o.at(0)}">${o.at(1)}</button>`).join("")}</div>`;
   displayMenu.innerHTML = `
@@ -733,7 +766,6 @@ function seenVersion() {
   try { return localStorage.getItem("seenVersion"); } catch (error) { return VERSION; }
 }
 newDot.hidden = seenVersion() === VERSION;
-document.querySelector("[data-version]").textContent = VERSION;
 
 function whatsNewHtml() {
   return CHANGELOG.map(v => `
@@ -839,7 +871,7 @@ function aboutHtml() {
     <h3 style="margin-top:22px">Flows</h3>
     <p>Physical (measured) flows on each French border from the ENTSO-E Transparency Platform, latest available: Belgium, Germany, Switzerland, Italy (North), Spain and Great Britain. Net exports are exports minus imports. Physical flows include loop flows and can differ from the commercial exchanges agreed in the markets.</p>
     <h3 style="margin-top:22px">Notable events (the bell)</h3>
-    <p>Records, the highest or lowest value for a while (at least a week for prices, a month for generation and flows), new unplanned nuclear outages of 1 GW or more, return dates pushed back a week or more, and negative prices today or tomorrow. Events from the past four days are listed. France only for now.</p>`;
+    <p>The bell shows the events of the market on screen: records, the highest or lowest value for a while (at least a week for prices, a month for generation and flows), negative prices today or tomorrow and, for France, new unplanned nuclear outages of 1 GW or more and return dates pushed back a week or more. Events from the past four days are listed.</p>`;
   const foot = `<p class="muted">Map outline: Natural Earth (public domain). Methodology, data files and code: <a href="${CONFIG.repoUrl}" target="_blank" rel="noopener">GitHub repository</a>.</p>`;
   return current && current.market === "es" ? aboutSpainHtml() + fr + foot : fr + aboutSpainHtml() + foot;
 }
@@ -867,7 +899,11 @@ function closeDrawer() {
   setTimeout(() => { drawer.hidden = true; backdrop.hidden = true; }, 200);
 }
 whatsNewButton.addEventListener("click", () => openDrawer("whatsnew"));
-document.querySelectorAll("[data-open]").forEach(b => b.addEventListener("click", () => openDrawer(b.dataset.open)));
+// The footer is redrawn per market, so its buttons are handled by delegation.
+document.addEventListener("click", event => {
+  const b = event.target.closest("[data-open]");
+  if (b) openDrawer(b.dataset.open);
+});
 drawer.querySelector("[data-close]").addEventListener("click", closeDrawer);
 backdrop.addEventListener("click", closeDrawer);
 document.addEventListener("keydown", event => {
@@ -883,10 +919,10 @@ document.addEventListener("keydown", event => {
 
 (async () => {
   renderPins();
+  const start = parseHash();
   await checkForNewData({ rerender: false });
   if (!dataVersion()) setDataVersion(String(Date.now()));
-  const { market, page, tab, params } = parseHash();
-  await navigate(market, page, tab, params);
+  await navigate(start.market, start.page, start.tab, start.params);
   setInterval(() => checkForNewData(), 120000);
   setInterval(showStatus, MIN);
 })();
