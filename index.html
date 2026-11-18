@@ -29,6 +29,7 @@
       const theme = saved.theme || localStorage.getItem("theme");
       if (theme === "light" || theme === "dark") document.documentElement.dataset.theme = theme;
       if (localStorage.getItem("sidebar") === "collapsed") document.documentElement.dataset.sidebar = "collapsed";
+      if (!location.hash || location.hash === "#home") document.documentElement.dataset.view = "home";
     } catch (error) {}
   </script>
 
