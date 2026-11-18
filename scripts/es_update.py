@@ -9,7 +9,7 @@ update.py (every 15 minutes through the refresh service).
   while the auction publishes.
 - Spain-Portugal physical flows (ENTSO-E): the past two days, at most every
   55 minutes.
-Then Spain's daily summaries are rebuilt.
+Then Spain's daily summaries and the daily price summary are rebuilt.
 
 Never stops the workflow: errors are printed and the run carries on, so the
 France data is always saved.
@@ -17,6 +17,7 @@ France data is always saved.
 import traceback
 from datetime import datetime, timedelta, timezone
 
+import es_prices
 import es_store
 from store import PARIS, fmt_utc, parse_ts
 
@@ -70,11 +71,12 @@ def run():
             traceback.print_exc()
             errors.append("PT flows: " + str(error))
 
-    try:
-        es_store.summarise()
-    except Exception as error:  # noqa: BLE001
-        traceback.print_exc()
-        errors.append("summaries: " + str(error))
+    for name, step in (("summaries", es_store.summarise), ("price summaries", es_prices.summarise_prices)):
+        try:
+            step()
+        except Exception as error:  # noqa: BLE001
+            traceback.print_exc()
+            errors.append(name + ": " + str(error))
 
     es_store.save_state(state)
     if errors:
