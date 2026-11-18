@@ -992,3 +992,6 @@ Le niveau de puissance pourra être réinterrogé si les conditions économiques
 --------
 Test at stable power.
 The power level will be reassessed depending on economic conditions."
+EC-EDF-05470-EDF-T-00105340,8,2026-11-18T13:43Z,17W100P100P0129H,GOLFECH 2,1310,PLANNED,COMPLEMENTARY_INFORMATION,ACTIVE,2027-04-16T22:00Z,2027-07-30T22:00Z,2027-04-16T22:00Z/2027-07-30T22:00Z/0/1310,"After its restart, the plant will gradually return by various load thresholds to full power. The ramp-up period will take at least 48 hours.
+-------------------------------------
+Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance. La remontée durera au moins 48h."

@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-11-18T13:35Z",
+ "generated_utc": "2026-11-18T13:46Z",
  "alerts": [
   {
    "id": "fr_base-low-since-2026-11-19",
@@ -32,6 +32,14 @@
    "title": "Negative French prices tomorrow",
    "detail": "1.75 hours below zero on 19 Nov 2026; lowest \u20ac-0.01/MWh.",
    "link": "prices/short"
+  },
+  {
+   "id": "nuc-delay-EC-EDF-05470-EDF-T-00105340-8",
+   "date": "2026-11-18",
+   "level": "event",
+   "title": "Return pushed back 15 days: Golfech 2",
+   "detail": "Now due back 2027-07-30 (was 2027-07-15).",
+   "link": "nuclear/today"
   },
   {
    "id": "wind-high-since-2026-11-17",
