@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-11-17T23:46Z",
+ "generated_utc": "2026-11-18T00:01Z",
  "alerts": [
   {
    "id": "fr_base-low-since-2026-11-18",
@@ -30,7 +30,7 @@
    "date": "2026-11-17",
    "level": "since",
    "title": "Highest net exports (daily average) since 2 Jun 2026",
-   "detail": "15.2 GW on 17 Nov 2026.",
+   "detail": "15.3 GW on 17 Nov 2026.",
    "link": "flows/explorer?subject=net"
   },
   {
