@@ -1014,3 +1014,8 @@ Prochain palier : 900 MW
 Unit is currently ramping up by steps
 Next step : 900 MW."
 EDF-05470_EDF_T_00342700,8,2026-11-18T16:15Z,17W100P100P01101,CHOOZ 1,1500,UNPLANNED,FAILURE,ACTIVE,2026-11-17T21:50Z,2026-11-18T21:00Z,2026-11-17T21:50Z/2026-11-18T21:00Z/800/700,-
+EDF-05470_EDF_T_00342948,2,2026-11-18T17:29Z,17W100P100P0114U,CIVAUX 2,1495,PLANNED,COMPLEMENTARY_INFORMATION,ACTIVE,2026-11-19T07:00Z,2026-11-19T16:00Z,2026-11-19T07:00Z/2026-11-19T16:00Z/375/1120,"Essai à puissance stable.
+Le niveau de puissance pourra être réinterrogé si les conditions économiques le justifient.
+--------
+Test at stable power.
+The power level will be reassessed depending on economic conditions."
