@@ -987,3 +987,8 @@ Baisse à 100 MW : [1 h] – palier à 100 MW : [1 h] – baisse jusqu’à déc
 Unit Ramping down before outage
 Ramp down to 100 MW : [1 h] – threshold at 100 MW : [1 h] – ramp down until decoupling"
 EDF-05470_EDF_T_00342700,7,2026-11-18T09:41Z,17W100P100P01101,CHOOZ 1,1500,UNPLANNED,FAILURE,ACTIVE,2026-11-17T21:50Z,2026-11-18T17:00Z,2026-11-17T21:50Z/2026-11-18T17:00Z/800/700,-
+EDF-05470_EDF_T_00342673,2,2026-11-18T10:33Z,17W100P100P0113W,CIVAUX 1,1495,PLANNED,COMPLEMENTARY_INFORMATION,ACTIVE,2026-11-18T08:00Z,2026-11-18T16:00Z,2026-11-18T08:00Z/2026-11-18T16:00Z/1255/240,"Essai à puissance stable.
+Le niveau de puissance pourra être réinterrogé si les conditions économiques le justifient.
+--------
+Test at stable power.
+The power level will be reassessed depending on economic conditions."
