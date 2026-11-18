@@ -986,3 +986,4 @@ Baisse à 100 MW : [1 h] – palier à 100 MW : [1 h] – baisse jusqu’à déc
 ---------------------------------------------------------------------------------------------------------------
 Unit Ramping down before outage
 Ramp down to 100 MW : [1 h] – threshold at 100 MW : [1 h] – ramp down until decoupling"
+EDF-05470_EDF_T_00342700,7,2026-11-18T09:41Z,17W100P100P01101,CHOOZ 1,1500,UNPLANNED,FAILURE,ACTIVE,2026-11-17T21:50Z,2026-11-18T17:00Z,2026-11-17T21:50Z/2026-11-18T17:00Z/800/700,-
