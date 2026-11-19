@@ -1,8 +1,13 @@
-"""Rebuilds Spain's daily summary files, the daily price summary and
-data/es/coverage.json from the stored data."""
+"""Rebuilds every Spain summary from the stored data: daily demand, mix,
+exchanges, flows and prices, the market summaries (capture prices,
+residual demand, parity, hourly files), the alerts and coverage.json."""
+import es_alerts
+import es_market
 import es_prices
 import es_store
 
 es_store.summarise()
 es_prices.summarise_prices()
+es_market.build(2015)
+es_alerts.build()
 es_store.coverage()
