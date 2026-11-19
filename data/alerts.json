@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-11-19T13:31Z",
+ "generated_utc": "2026-11-19T13:46Z",
  "alerts": [
   {
    "id": "neg-2026-11-19",
@@ -23,14 +23,6 @@
    "level": "event",
    "title": "New unplanned outage: Saint-Alban 2",
    "detail": "1,047 MW off from 2026-11-18 20:47 UTC to 2026-11-19 07:00 UTC.",
-   "link": "nuclear/today"
-  },
-  {
-   "id": "nuc-delay-EC-EDF-05470-EDF-T-00105340-8",
-   "date": "2026-11-18",
-   "level": "event",
-   "title": "Return pushed back 15 days: Golfech 2",
-   "detail": "Now due back 2027-07-30 (was 2027-07-15).",
    "link": "nuclear/today"
   },
   {
