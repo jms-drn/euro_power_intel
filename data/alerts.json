@@ -1,21 +1,4 @@
 {
- "generated_utc": "2026-11-19T22:46Z",
- "alerts": [
-  {
-   "id": "neg-2026-11-19",
-   "date": "2026-11-19",
-   "level": "event",
-   "title": "Negative French prices today",
-   "detail": "1.75 hours below zero on 19 Nov 2026; lowest \u20ac-0.01/MWh.",
-   "link": "prices/short"
-  },
-  {
-   "id": "low_carbon-high-month-2026-11-18",
-   "date": "2026-11-18",
-   "level": "month",
-   "title": "Highest low-carbon share of generation for November",
-   "detail": "98.3% on 18 Nov 2026, the highest for any November since 2015.",
-   "link": "generation/explorer?subject=lowc&measure=share"
-  }
- ]
+ "generated_utc": "2026-11-19T23:01Z",
+ "alerts": []
 }
