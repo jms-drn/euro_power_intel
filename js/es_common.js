@@ -2,7 +2,7 @@
 // Base class used by the analysis tabs (period picker, settings, address
 // and shared period), simple statistics and a scatter/heat-map helper.
 // Code note: no asterisks here (chat formatting strips them when pasted).
-import { bindPeriod, readParams } from "./market-common.js";
+import { bindPeriod } from "./market-common.js";
 import { copyText, fmtNumber, toWall, writeHash } from "./util.js";
 
 export const mul = (a, b) => a / (1 / b);
@@ -32,20 +32,22 @@ export function selectHtml(k, label, options) {
   return `<label class="field"><span>${label}</span><select data-k="${k}">${options.map(o => `<option value="${o.at(0)}">${o.at(1)}</option>`).join("")}</select></label>`;
 }
 
-// Analysis tab: a period picker plus settings (data-k), the address, the
-// shared period across the Prices tabs, and a render(id) to implement.
+// Analysis tab: an optional period picker plus settings (data-k), the
+// address, the shared period across the Prices tabs, and a render(id) to
+// implement. Pass hasPeriod = false for tabs without a period picker.
 export class Base {
-  constructor(root, key, defaults) {
+  constructor(root, key, defaults, hasPeriod = true) {
     this.root = root;
     this.key = key;
     this.writesHash = true;
+    this.hasPeriod = hasPeriod;
     this.state = { preset: "last365", from: "", to: "", ...defaults };
     this.renderId = 0;
     this.panels = [];
   }
   wire() {
     this.headline = wireHeadline(this.root);
-    this.period = this.root.querySelector("[data-p]") ? bindPeriod(this.root, this.state, () => this.update()) : null;
+    this.period = this.hasPeriod ? bindPeriod(this.root, this.state, () => this.update()) : null;
     this.root.querySelectorAll("[data-k]").forEach(input => input.addEventListener("change", () => {
       this.state[input.dataset.k] = input.type === "checkbox" ? (input.checked ? "1" : "0") : input.value;
       this.update();
@@ -59,7 +61,7 @@ export class Base {
     });
   }
   setParams(p) {
-    readParams(this.state, p);
+    for (const k of Object.keys(this.state)) if (p.has(k)) this.state[k] = p.get(k);
     if (this.period && this.state.preset !== "custom") this.period.apply();
     this.sync();
   }
@@ -71,6 +73,7 @@ export class Base {
   activate() { return this.update(); }
   async update() {
     const id = ++this.renderId;
+    if (this.period && this.state.preset !== "custom") this.period.apply();
     writeHash(this.key, this.state);
     this.sync();
     try {
@@ -87,7 +90,7 @@ export class Base {
 const YEAR_COLOURS = ["#60a5fa", "#34d399", "#fbbf24", "#f472b6", "#a78bfa", "#f87171", "#22d3ee", "#a3e635", "#fb923c", "#e879f9", "#94a3b8", "#2dd4bf"];
 export const yearColour = (year, last) => YEAR_COLOURS.at((last - year) % YEAR_COLOURS.length);
 
-// A custom ECharts scatter for ChartPanel: groups = [{name, colour, data: [[x, y], ...]}].
+// A custom ECharts scatter for ChartPanel: groups = list of {name, colour, data: list of [x, y]}.
 export function scatterSpec({ groups, xName, yName, xFmt, yFmt, notes, source }) {
   return {
     source, notes,
