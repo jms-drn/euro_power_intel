@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-11-19T20:46Z",
+ "generated_utc": "2026-11-19T21:01Z",
  "alerts": [
   {
    "id": "neg-2026-11-19",
@@ -8,22 +8,6 @@
    "title": "Negative French prices today",
    "detail": "1.75 hours below zero on 19 Nov 2026; lowest \u20ac-0.01/MWh.",
    "link": "prices/short"
-  },
-  {
-   "id": "nuc-new-EDF-05470_EDF_T_00342993",
-   "date": "2026-11-18",
-   "level": "event",
-   "title": "New unplanned outage: Saint-Alban 1",
-   "detail": "1,075 MW off from 2026-11-18 20:47 UTC to 2026-11-19 07:00 UTC.",
-   "link": "nuclear/today"
-  },
-  {
-   "id": "nuc-new-EDF-05470_EDF_T_00342992",
-   "date": "2026-11-18",
-   "level": "event",
-   "title": "New unplanned outage: Saint-Alban 2",
-   "detail": "1,047 MW off from 2026-11-18 20:47 UTC to 2026-11-19 07:00 UTC.",
-   "link": "nuclear/today"
   },
   {
    "id": "low_carbon-high-month-2026-11-18",
