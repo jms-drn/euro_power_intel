@@ -1,30 +1,6 @@
 {
- "generated_utc": "2026-11-19T12:31Z",
+ "generated_utc": "2026-11-19T12:46Z",
  "alerts": [
-  {
-   "id": "fr_base-low-since-2026-11-19",
-   "date": "2026-11-19",
-   "level": "since",
-   "title": "Lowest French day-ahead baseload since 25 Oct 2026",
-   "detail": "\u20ac60.35/MWh on 19 Nov 2026.",
-   "link": "prices/explorer?subject=FR&measure=base"
-  },
-  {
-   "id": "fr_min-low-since-2026-11-19",
-   "date": "2026-11-19",
-   "level": "since",
-   "title": "Lowest single French day-ahead price since 10 Oct 2026",
-   "detail": "\u2212\u20ac0.01/MWh on 19 Nov 2026.",
-   "link": "prices/explorer?subject=FR&measure=min"
-  },
-  {
-   "id": "fr_neg-high-since-2026-11-19",
-   "date": "2026-11-19",
-   "level": "since",
-   "title": "Highest negative-price hours in a day (France) since 27 Sep 2026",
-   "detail": "1.75 h on 19 Nov 2026.",
-   "link": "prices/explorer?subject=FR&measure=neg"
-  },
   {
    "id": "neg-2026-11-19",
    "date": "2026-11-19",
