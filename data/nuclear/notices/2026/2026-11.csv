@@ -1158,3 +1158,33 @@ Prochain palier : PMD
 Unit is currently ramping up by steps
 Next step : PMD"
 EDF-05470_EDF_T_00343115,4,2026-11-19T13:38Z,17W100P100P0090I,BELLEVILLE 1,1310,UNPLANNED,FAILURE,ACTIVE,2026-11-19T07:40Z,2026-11-19T16:00Z,2026-11-19T07:40Z/2026-11-19T16:00Z/888/422,-
+EDF-05470_EDF_T_00342170,11,2026-11-19T13:47Z,17W100P100P0090I,BELLEVILLE 1,1310,PLANNED,COMPLEMENTARY_INFORMATION,ACTIVE,2026-11-15T20:00Z,2026-11-20T01:00Z,2026-11-15T20:00Z/2026-11-20T01:00Z/888/422,"Remontée par paliers en cours
+Prochain palier : 1300 MW
+--------
+Unit is currently ramping up by steps
+Next step : 1300 MW."
+EDF-05470_EDF_T_00342992,4,2026-11-19T13:57Z,17W100P100P0146H,ST ALBAN 2,1335,UNPLANNED,COMPLEMENTARY_INFORMATION,ACTIVE,2026-11-18T20:47Z,2026-11-19T15:00Z,2026-11-18T20:47Z/2026-11-19T15:00Z/340/995,"Grève
+La baisse de production est susceptible de se prolonger jusqu'à la fin du mouvement social annoncé.
+--------
+Strike
+The production restriction is likely to continue until the end of the national strike."
+EDF-05470_EDF_T_00343080,2,2026-11-19T13:57Z,17W100P100P0148D,ST LAURENT 2,915,UNPLANNED,COMPLEMENTARY_INFORMATION,ACTIVE,2026-11-19T06:27Z,2026-11-19T15:00Z,2026-11-19T06:27Z/2026-11-19T15:00Z/180/735,"Grève
+La baisse de production est susceptible de se prolonger jusqu'à la fin du mouvement social annoncé.
+--------
+Strike
+The production restriction is likely to continue until the end of the national strike."
+EDF-05470_EDF_T_00343080,3,2026-11-19T14:13Z,17W100P100P0148D,ST LAURENT 2,915,UNPLANNED,COMPLEMENTARY_INFORMATION,ACTIVE,2026-11-19T06:27Z,2026-11-19T21:00Z,2026-11-19T06:27Z/2026-11-19T21:00Z/180/735,"Grève
+La baisse de production est susceptible de se prolonger jusqu'à la fin du mouvement social annoncé.
+--------
+Strike
+The production restriction is likely to continue until the end of the national strike."
+EDF-05470_EDF_T_00342992,5,2026-11-19T14:14Z,17W100P100P0146H,ST ALBAN 2,1335,UNPLANNED,COMPLEMENTARY_INFORMATION,ACTIVE,2026-11-18T20:47Z,2026-11-19T21:00Z,2026-11-18T20:47Z/2026-11-19T21:00Z/340/995,"Grève
+La baisse de production est susceptible de se prolonger jusqu'à la fin du mouvement social annoncé.
+--------
+Strike
+The production restriction is likely to continue until the end of the national strike."
+EDF-05470_EDF_T_00342471,9,2026-11-19T16:04Z,17W100P100P0119K,CRUAS 4,915,PLANNED,COMPLEMENTARY_INFORMATION,ACTIVE,2026-11-17T01:56Z,2026-11-21T16:00Z,2026-11-17T01:56Z/2026-11-21T16:00Z/380/535,"Remontée par paliers en cours
+Prochain palier : 781 MW
+--------
+Unit is currently ramping up by steps
+Next step : 781 MW."
