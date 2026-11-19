@@ -1,0 +1,124 @@
+// Text of the "About the data" and "What's new" panels.
+// Code note: no asterisks here (chat formatting strips them when pasted).
+import { CHANGELOG } from "./changelog-v5.js";
+import { CONFIG } from "./config.js";
+
+const term = (t, d) => `<dt>${t}</dt><dd>${d}</dd>`;
+
+export function whatsNewHtml() {
+  return CHANGELOG.map(v => `
+    <section class="release">
+      <div class="release-head"><span class="release-tag">v${v.version}</span><span class="muted">${v.date}</span></div>
+      <h3>${v.title}</h3>
+      ${v.sections.map(sec => `<h4>${sec.heading}</h4><ul>${sec.items.map(i => `<li>${i}</li>`).join("")}</ul>`).join("")}
+    </section>`).join("");
+}
+
+function spainHtml() {
+  return `
+    <h3>Spain</h3>
+    <p>Spanish figures cover mainland Spain (the Peninsula); the Balearic and Canary Islands, Ceuta and Melilla are left out. Demand, REE's demand forecast and the generation mix come from REE, the Spanish transmission system operator, through its ESIOS platform: REE publishes them every 5 minutes and the site averages them to quarter-hours, from 1 Jan 2015. Day-ahead prices for Spain, France and Portugal and physical flows on the French and Portuguese borders come from the ENTSO-E Transparency Platform. Mainland Spain and France share the same clock, so times are Central European time.</p>
+    <dl class="glossary">
+      ${term("Demand", "REE's real-time mainland demand (Demanda real).")}
+      ${term("REE forecast", "REE's demand forecast (Demanda prevista), revised through the day; the latest value for each quarter-hour is kept.")}
+      ${term("Hydro", "Output before pumping: REE's real-time hydro figure, which is net of pumped-storage consumption, plus that consumption. REE publishes pumping only from 30 Dec 2024; before that, REE's net figure is shown.")}
+      ${term("Pumping", "Consumption of pumped-storage plants, shown below zero on the mix charts (from 30 Dec 2024).")}
+      ${term("Solar", "Solar PV plus solar thermal, from 2 Jun 2015, when REE's split starts; REE's solar total before that.")}
+      ${term("Renewable share", "Wind, solar, hydro and renewable thermal as a share of total generation (pumping excluded).")}
+      ${term("Net exports", "On the price and mix pages, REE's real-time international exchange balance with its sign reversed, so positive means Spain exported. On the Flows pages, measured flows with France and Portugal from ENTSO-E.")}
+      ${term("Same price / split", "The share of quarter-hours when the Spanish price was within €0.01/MWh of the French or Portuguese price (hourly prices before 30 Sep 2025 are repeated across their quarter-hours). Split is the rest of the time.")}
+      ${term("Capture price", "The Spanish day-ahead price weighted by a technology's output each quarter-hour. Capture rate: capture price divided by the baseload price.")}
+      ${term("Residual demand", "Spanish demand minus wind and solar output.")}
+      ${term("Hourly charts", "Mix & Price, Negative Prices (thresholds other than zero), Capture by hour and Residual Demand by level use hourly averages.")}
+    </dl>`;
+}
+
+function franceHtml() {
+  return `
+    <h3>France</h3>
+    <p>Figures come from RTE, the French transmission system operator, through its public APIs (consumption, actual generation and unavailability notices), and from the ENTSO-E Transparency Platform (day-ahead prices and cross-border flows). They cover mainland France. Times are Paris time.</p>
+    <h3>Demand</h3>
+    <p>Demand includes grid losses and excludes pumping at hydropower plants. It is average power over each interval, in MW or GW.</p>
+    <h4>Forecasts</h4>
+    <dl class="glossary">
+      ${term("Actual", "Measured demand (RTE calls it \"realised\"), every 15 minutes.")}
+      ${term("Intraday", "RTE's forecast for today, revised through the day.")}
+      ${term("D-1", "Day-ahead forecast, made the day before (published around 19:30 Paris time).")}
+      ${term("D-2", "Forecast made two days before (published around 07:00).")}
+      ${term("Week-ahead", "Forecasts for 3 to 9 days ahead, published on weekdays, with the expected daily peak and RTE's temperature assumption.")}
+      ${term("Annual forecast", "RTE's forecast for each week of the next year: a demand range and the expected supply margin.")}
+      ${term("Lead time", "How far ahead a forecast was made.")}
+    </dl>
+    <h4>Accuracy measures</h4>
+    <dl class="glossary">
+      ${term("Error", "Forecast minus actual. Positive means RTE expected more demand than happened. Forecasts are compared every half-hour.")}
+      ${term("MAE", "Mean absolute error: the average size of the miss in GW, ignoring direction.")}
+      ${term("MAPE", "Mean absolute percentage error: the same, as a share of demand. Best for comparing seasons.")}
+      ${term("Bias", "Average error keeping its sign: shows whether RTE tends to over- or under-forecast.")}
+      ${term("Peak error", "Forecast daily maximum minus actual daily maximum.")}
+    </dl>
+    <h4>Comparisons</h4>
+    <dl class="glossary">
+      ${term("Calendar date", "Compares the same dates in earlier years (1–29 Oct with 1–29 Oct).")}
+      ${term("Weekday", "Compares each day with the same weekday 52 weeks (364 days) earlier, so weekends line up.")}
+      ${term("Like-for-like", "Percentage comparisons only use the days and times available this year, so a month to date is compared with the same days.")}
+      ${term("Min–max range", "The band between the lowest and highest earlier year at each point.")}
+      ${term("Daily profile", "The average shape of a day across the selected period, e.g. the typical October day.")}
+      ${term("Forecast ahead", "In the Explorer, periods can run past today: after the last actual value the line continues with RTE's best available forecast.")}
+    </dl>
+    <h4>Data notes</h4>
+    <ul>
+      <li>History runs from 17 Dec 2012. The data updates automatically during the day.</li>
+      <li>RTE time-stamps historical D-1 forecasts after the day they cover, so values before 26 Oct 2026 can't be confirmed as the versions published the day before. From that date the site records the version published in advance.</li>
+      <li>RTE's D-1 data for 2–14 Oct 2019 contains corrupt values (around 0.7 GW) and is excluded.</li>
+      <li>Clock-change days have 23 or 25 hours; daily figures account for this.</li>
+    </ul>
+    <h3 style="margin-top:22px">Nuclear availability</h3>
+    <p>EDF publishes a notice for every planned or unplanned reduction in a reactor's available capacity, and a new version whenever it changes. The site stores every version since December 2010.</p>
+    <dl class="glossary">
+      ${term("Available capacity", "Installed capacity minus the unavailable capacity in the notices covering that moment. Where notices overlap on one reactor, the largest reduction counts (they are not added up).")}
+      ${term("Planned / unplanned", "As declared by EDF: planned outages (refuelling, maintenance, ten-yearly inspections) are announced in advance; unplanned ones (failures, other incidents) are not. Modulation to follow demand is not an outage.")}
+      ${term("Offline / partially available", "Offline means the notices leave less than 10% of the reactor's capacity available; partially available means between 10% and 90%.")}
+      ${term("Modulating", "Online, but producing less than 80% of its available capacity in the latest hour, usually to follow demand or prices.")}
+      ${term("Output", "Measured nuclear generation from RTE's actual generation data, hourly (fleet since 15 Dec 2014; per reactor for the past week).")}
+      ${term("Load factor", "Output divided by installed capacity.")}
+      ${term("Outlook as of a date", "The availability (and unavailability, split into planned and unplanned) implied by the latest version of each notice published by the end of that day (Paris time), for each of the next 540 days. Comparing outlooks from different dates shows how expectations moved.")}
+      ${term("First announced end", "The end date in the first version of a notice. The change against it shows extensions and early returns.")}
+    </dl>
+    <ul>
+      <li>Fessenheim 1 and 2 leave the fleet when they closed (22 Feb and 30 Jun 2020); Flamanville 3 joins at its first grid connection (21 Dec 2024). EDF filed Fessenheim's closure as an outage to 2099 and later cancelled it, so closures come from the site's own reactor list.</li>
+      <li>Notices before 2015, when the EU's REMIT transparency rules took full effect, may be less complete.</li>
+      <li>Outlooks only contain outages already announced, so they are usually above what happens.</li>
+    </ul>
+    <h3 style="margin-top:22px">Hydro reservoirs</h3>
+    <p>RTE's weekly figure for the energy stored in the hydro reservoirs it monitors, in MWh (shown as TWh), since December 2014. Fill level is that figure as a share of the reservoirs' total capacity of 3,591 GWh (RTE); differences in fill level are in percentage points (pp). Weeks are compared by ISO week number.</p>
+    <h3 style="margin-top:22px">Prices</h3>
+    <p>Day-ahead auction prices from the ENTSO-E Transparency Platform, in €/MWh, for France, Germany (DE-LU; DE-AT-LU before 1 Oct 2018), Belgium, Switzerland, Italy North, Spain and Portugal, from 5 Jan 2015. The European day-ahead market moved from hourly to 15-minute prices for delivery from 30 Sep 2025; Switzerland stays hourly.</p>
+    <dl class="glossary">
+      ${term("Baseload", "Average of every period in the day, each weighted by its length.")}
+      ${term("Peak / off-peak", "Peak is Monday–Friday 08:00–20:00 local time (the market standard); off-peak is every other period.")}
+      ${term("Spread", "The home market minus the neighbour: positive means the home market was dearer.")}
+      ${term("Parity", "Share of periods when the two prices differ by less than €0.01/MWh, usually because the interconnector between them was not congested.")}
+      ${term("Negative-price hours", "Time with a price below zero (a 15-minute period counts as 0.25 hours). Zero-priced periods can be included with a switch.")}
+      ${term("Negative-price depth", "How far below zero (or below the chosen threshold) each period was, times its length, added up, in €/MWh·h. It weighs depth and duration together.")}
+      ${term("Volatility", "Standard deviation of the prices within each day.")}
+      ${term("Capture price", "Average price weighted by a technology's output: what a megawatt-hour of solar, wind or nuclear sold for on average. Capture rate: capture price divided by baseload.")}
+      ${term("Residual demand", "Demand minus wind and solar output: what the rest of the fleet and imports have to cover.")}
+      ${term("Modulating reactor (Nuclear Modulation)", "In an hour when the reactor is running (output and availability both at least 10% of its capacity), output below the chosen share (70, 80, 90 or 95%) of its available capacity. Per-reactor output comes from RTE's actual generation per unit, hourly since Dec 2014.")}
+      ${term("Unused available nuclear capacity", "Available capacity in the outage notices minus measured nuclear output, never below zero. It includes modulation to follow prices and demand, but also frequency reserves, end-of-cycle coast-downs, ramp limits and undeclared outages.")}
+      ${term("Duration curve", "Every period sorted from highest to lowest, so you can read the share of time a level was reached.")}
+    </dl>
+    <h3 style="margin-top:22px">Generation</h3>
+    <p>RTE's actual generation by fuel: hourly in 2015–16, every 15 minutes from 2017. Hydro includes run-of-river, reservoirs and pumped-storage generation; pumping is not counted. Low-carbon: nuclear, hydro, wind, solar and bioenergy. Renewable: hydro, wind, solar and bioenergy.</p>
+    <h3 style="margin-top:22px">Flows</h3>
+    <p>Physical (measured) flows on each French border from the ENTSO-E Transparency Platform, latest available: Belgium, Germany, Switzerland, Italy (North), Spain and Great Britain. Net exports are exports minus imports. Physical flows include loop flows and can differ from the commercial exchanges agreed in the markets.</p>`;
+}
+
+const BELL = `
+    <h3 style="margin-top:22px">Notable events (the bell)</h3>
+    <p>The bell shows the events of the market on screen, with filters by topic: records, the highest or lowest value for a while (at least a week for prices, a month for demand, generation and flows), negative prices and, for France, new unplanned nuclear outages of 1 GW or more and return dates pushed back a week or more. Events from the past four days are listed.</p>`;
+
+export function aboutHtml(market) {
+  const foot = `<p class="muted">Map outline: Natural Earth (public domain). Methodology, data files and code: <a href="${CONFIG.repoUrl}" target="_blank" rel="noopener">GitHub repository</a>.</p>`;
+  return (market === "es" ? spainHtml() + franceHtml() : franceHtml() + spainHtml()) + BELL + foot;
+}
