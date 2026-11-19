@@ -2,7 +2,7 @@
 // the markets (live ones open their Overview; others are shown faded as
 // coming soon) and a one-line footer. Each visit plays a short fade-and-rise
 // entrance, skipped for visitors who ask their device for reduced motion.
-import { VERSION } from "./changelog.js";
+import { VERSION } from "./changelog-v5.js";
 import { flag } from "./flags.js";
 import { getPrices } from "./market-data.js";
 import { MARKETS, MARKET_ORDER, SITE_ACCENT, SITE_LONG, SITE_NAME, lastMarket } from "./markets.js";
