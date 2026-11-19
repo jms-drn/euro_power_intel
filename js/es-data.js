@@ -1,40 +1,37 @@
-// Spain data: loaders for the files written by scripts/es_store.py and
-// scripts/es_prices.py. Until Spain's history has been downloaded (no
-// data/es/coverage.json yet), sample data is generated instead, so the pages
-// can be tried out; a "Sample data" label shows wherever it is used.
-// Add ?mock=1 before the # in the address to force sample data, ?mock=0 to
-// force real data.
+// Spain data: loaders for the files written by scripts/es_store.py,
+// es_prices.py, es_market.py and es_alerts.py.
 // Code note: no asterisks here (chat formatting strips them when pasted), so
 // multiplication is written with mul().
 import { cached, fetchText, parseUtc } from "./data.js";
 import { getFlows, getPrices } from "./market-data.js";
-import { DAY, HOUR, QUARTER, addDays, dateKey, fmtLongDate, fmtTime, parisMidnight, toWall, todayParis } from "./util.js";
+import { QUARTER, addDays, dateKey, fmtLongDate, fmtTime, parisMidnight, todayParis } from "./util.js";
 
 export const ES_FIRST = "2015-01-01";
+export const PRICE_FIRST = "2015-01-05";
 export const REE = "REE (Spanish TSO) via ESIOS";
 export const ENTSOE = "ENTSO-E Transparency Platform";
+export const BOTH = "ENTSO-E and REE";
 export const mul = (a, b) => a / (1 / b);
-
-// ---------- Sample-data switch ----------
-
-let mock = null;
-export async function isMock() {
-  if (mock !== null) return mock;
-  const q = new URLSearchParams(location.search).get("mock");
-  if (q === "1" || q === "0") { mock = q === "1"; return mock; }
-  const cov = await fetchText("data/es/coverage.json", { optional: true }).catch(() => "");
-  mock = !cov;
-  return mock;
-}
-export const usingMock = () => mock === true;
+// Kept for the current main.js; sample data has been retired now that the
+// real history is in.
+export const usingMock = () => false;
 
 // ---------- Reading CSV files ----------
 
 const num = s => (s === "" || s == null ? null : Number(s));
 function parse(text) {
   const lines = (text || "").trim().split("\n");
-  if (!lines[0]) return { header: [], rows: [] };
-  return { header: lines[0].split(","), rows: lines.slice(1).map(l => l.split(",")) };
+  if (!lines.at(0)) return { header: [], rows: [] };
+  return { header: lines.at(0).split(","), rows: lines.slice(1).map(l => l.split(",")) };
+}
+function toObjects(text, timeCol) {
+  const p = parse(text);
+  return p.rows.map(r => {
+    const o = {};
+    p.header.forEach((h, i) => { o[h] = h === timeCol ? r.at(i) : num(r.at(i)); });
+    if (timeCol === "t") o.t = parseUtc(o.t);
+    return o;
+  });
 }
 function monthsOf(from, to) {
   const out = [];
@@ -56,14 +53,11 @@ async function monthly(base, from, to, cols) {
     fetchText(base + "/" + ym.slice(0, 4) + "/" + ym + ".csv", { optional: true }).catch(() => "")));
   const out = [];
   for (const text of texts) {
-    const p = parse(text);
-    const idx = {};
-    p.header.forEach((h, i) => { idx[h] = i; });
-    for (const r of p.rows) {
-      const t = parseUtc(r[0]);
+    for (const r of toObjects(text, "start_utc")) {
+      const t = parseUtc(r.start_utc);
       if (t < lo || t >= hi) continue;
-      const rec = { t, min: idx.min != null ? Number(r[idx.min]) || 15 : 15 };
-      for (const c of cols) rec[c] = idx[c] != null ? num(r[idx[c]]) : null;
+      const rec = { t, min: r.min || 15 };
+      for (const c of cols) rec[c] = r[c] ?? null;
       out.push(rec);
     }
   }
@@ -73,19 +67,11 @@ async function monthly(base, from, to, cols) {
 function table(rows) {
   return { rows, byDate: new Map(rows.map(r => [r.date, r])) };
 }
-function daily(name, sample) {
-  return cached("es-daily-" + name, async () => {
-    if (await isMock()) return table(sample());
-    const p = parse(await fetchText("data/es/daily/" + name + ".csv", { optional: true }));
-    return table(p.rows.map(r => {
-      const o = { date: r[0] };
-      for (let i = 1; i < p.header.length; i++) o[p.header[i]] = num(r[i]);
-      return o;
-    }));
-  });
+function daily(name) {
+  return cached("es-daily-" + name, async () => table(toObjects(await fetchText("data/es/daily/" + name + ".csv", { optional: true }), "date")));
 }
 
-// ---------- Columns ----------
+// ---------- Generation ----------
 
 export const MIX_COLS = ["hydro", "coal", "fuel_gas", "nuclear", "ccgt", "wind", "solar", "exchanges", "balearic_link", "other",
   "solar_thermal", "solar_pv", "renewable_thermal", "chp_other", "pump_load", "pump_gen", "hydro_gen"];
@@ -102,218 +88,73 @@ export const FUELS = [
   { value: "fuel_gas", label: "Fuel-gas", colour: "--f-oil" }
 ];
 export const RENEWABLE = ["wind", "solar_pv", "solar_thermal", "hydro", "renewable_thermal"];
-// Older data has no solar split or cogeneration split: fall back to the totals.
+// Output of one technology (MW, never below zero). Hydro is REE's real-time
+// hydro plus pumping consumption, i.e. output before pumping (REE's own
+// figure is net of pumping); before Dec 2024 there is no pumping series and
+// REE's figure is used. Before June 2015 there is no solar or cogeneration
+// split, so the totals stand in.
 export function fuelValue(r, f) {
   let v = r[f];
+  if (f === "hydro" && v != null && r.pump_load != null) v = v - r.pump_load;
   if (v == null && f === "solar_pv") v = r.solar;
   if (v == null && f === "chp_other") v = r.other;
   return v == null ? null : Math.max(0, v);
 }
+// Pumping consumption (MW, zero or negative), or null before Dec 2024.
+export function pumpValue(r) {
+  return r.pump_load == null ? null : Math.min(0, r.pump_load);
+}
 export function totalGen(r) {
   return FUELS.reduce((a, f) => a + (fuelValue(r, f.value) || 0), 0);
 }
-
-// ---------- Sample data ----------
-// Smooth, repeatable shapes: seasonal swings, a daily profile, weekends and
-// day-to-day noise, so every chart and comparison has something to show.
-
-const rnd = s => { const x = mul(Math.sin(s), 43758.5453); return x - Math.floor(x); };
-const dayNo = d => Math.round((Date.parse(d + "T12:00:00Z") - Date.parse("2015-01-01T12:00:00Z")) / DAY);
-const sinPi = x => Math.sin(mul(Math.PI, x));
-function dayInfo(d) {
-  const n = dayNo(d);
-  const doy = (Date.parse(d + "T12:00:00Z") - Date.parse(d.slice(0, 4) + "-01-01T12:00:00Z")) / DAY;
-  const winter = Math.cos(mul(2, mul(Math.PI, (doy - 15) / 365)));
-  const summer = (1 - winter) / 2;
-  const wd = (new Date(d + "T12:00:00Z").getUTCDay() + 6) % 7;
-  return {
-    n, winter, summer, weekend: wd >= 5,
-    windDay: rnd(n + 0.17), cloud: rnd(n + 0.41), gas: 0.8 + mul(0.6, rnd(Math.floor(n / 30) + 0.9)),
-    nucOut: rnd(n + 0.73) < 0.25 ? 1 : 0, trend: n / 4000
-  };
+export const getMixDaily = () => daily("mix");
+export function getMixRaw(from, to) {
+  return cached("es-mix-" + from + "-" + to, () => monthly("data/es/mix", from, to, MIX_COLS));
 }
-const infoCache = new Map();
-const info = d => { if (!infoCache.has(d)) infoCache.set(d, dayInfo(d)); return infoCache.get(d); };
-
-function sample(t) {
-  const d = dateKey(t);
-  const w = new Date(toWall(t));
-  const h = w.getUTCHours() + w.getUTCMinutes() / 60;
-  const I = info(d);
-  const noise = rnd(t / 900000 + 0.5) - 0.5;
-  const shape = sinPi(Math.max(0, Math.min(1, (h - 5) / 19)));
-  const demand = 27000 + mul(3500, I.winter) - (I.weekend ? 3500 : 0) + mul(5000, shape - 0.55) + mul(400, noise);
-  const solarCap = 8000 + mul(14000, I.summer) + mul(4000, I.trend);
-  const pv = h > 7 && h < 20 ? mul(mul(solarCap, sinPi((h - 7) / 13)), 1 - mul(0.6, I.cloud)) : 0;
-  const st = mul(pv, 0.04);
-  const wind = Math.max(500, mul(16000, I.windDay) + mul(1500, Math.sin(h / 3 + I.n)) + 1500);
-  const nuclear = 7100 - mul(1000, I.nucOut);
-  const hydro = 2500 + mul(2000, I.winter) + mul(1500, shape);
-  const other = 1700;
-  const ccgt = Math.max(1200, demand - pv - st - wind - nuclear - hydro - other + 800);
-  const esPrice = Math.max(-2, mul(55 + mul(25, I.gas) + mul(15, I.winter), 1) + mul(30, Math.sin(mul(Math.PI, (h - 8) / 12))) - mul(pv, 0.004) - mul(wind, 0.002) + mul(8, noise));
-  const frPrice = esPrice + 8 + mul(15, I.winter) + mul(10, rnd(I.n + 2.2) - 0.3);
-  const ptPrice = rnd(I.n + 3.3) < 0.9 ? esPrice : esPrice + 4;
-  const frNet = mul(2200, Math.sin(h / 4 + I.n)) - mul(900, I.winter);
-  const ptNet = 600 + mul(1200, rnd(I.n + 5.5) - 0.4);
-  return {
-    actual: demand, forecast: demand + mul(500, rnd(t / 3600000 + 0.2) - 0.5),
-    nuclear, wind, solar_pv: pv, solar_thermal: st, solar: pv + st, hydro, hydro_gen: hydro, ccgt,
-    chp_other: 1100, renewable_thermal: 450, other: 1550 + st, coal: mul(150, I.winter), fuel_gas: 0,
-    exchanges: -(frNet + ptNet), balearic_link: -60, pump_load: -mul(900, pv / Math.max(1, solarCap)), pump_gen: mul(600, shape),
-    ES: esPrice, FR: frPrice, PT: ptPrice,
-    fr_exp: Math.max(0, frNet), fr_imp: Math.max(0, -frNet), pt_exp: Math.max(0, ptNet), pt_imp: Math.max(0, -ptNet)
-  };
-}
-// Which sample values exist at time t: demand, mix and flows up to now;
-// the forecast two days ahead; prices to the end of tomorrow after 13:00.
-function horizon(kind) {
-  const now = Date.now();
-  if (kind === "forecast") return parisMidnight(addDays(todayParis(), 2));
-  if (kind === "price") {
-    const h = new Date(toWall(now)).getUTCHours();
-    return parisMidnight(addDays(todayParis(), h >= 13 ? 2 : 1));
-  }
-  return now - (now % QUARTER) - QUARTER;
-}
-function sampleRaw(from, to, pick) {
-  const out = [];
-  const hi = parisMidnight(addDays(to, 1));
-  for (let t = parisMidnight(from); t < hi; t += QUARTER) {
-    const rec = pick(t, sample(t));
-    if (rec) out.push(rec);
-  }
-  return out;
-}
-const hourCache = new Map();
-function hoursOf(d) {
-  if (!hourCache.has(d)) {
-    const hrs = [];
-    const end = parisMidnight(addDays(d, 1));
-    for (let t = parisMidnight(d); t < end; t += HOUR) hrs.push({ t, v: sample(t) });
-    hourCache.set(d, hrs);
-  }
-  return hourCache.get(d);
-}
-function sampleDaily(build) {
-  const out = [];
-  const last = addDays(todayParis(), 1);
-  for (let d = ES_FIRST; d <= last; d = addDays(d, 1)) {
-    const row = build(d, hoursOf(d));
-    if (row) out.push(row);
-  }
-  return out;
-}
-const avg = (hrs, f) => hrs.reduce((a, x) => a + f(x), 0) / hrs.length;
 
 // ---------- Demand ----------
 
-export const getDemandDaily = () => daily("demand", () => sampleDaily((d, hrs) => {
-  const now = Date.now();
-  const real = hrs.filter(x => x.t < now);
-  const row = { date: d, forecast_mean: Math.round(avg(hrs, x => x.v.forecast)) };
-  if (real.length >= 20) {
-    const vs = real.map(x => x.v.actual);
-    row.mean = Math.round(avg(real, x => x.v.actual));
-    row.peak = Math.round(Math.max(...vs));
-    row.minimum = Math.round(Math.min(...vs));
-    row.energy_gwh = Math.round(row.mean / 100 / (1 / real.length)) / 10;
-    row.hours = real.length;
-  }
-  return row;
-}));
-
+export const getDemandDaily = () => daily("demand");
 export function getDemandRaw(from, to) {
-  return cached("es-demand-" + from + "-" + to, async () => {
-    if (await isMock()) {
-      const now = horizon("actual");
-      const fh = horizon("forecast");
-      return sampleRaw(from, to, (t, v) => (t >= fh ? null : { t, min: 15, actual: t <= now ? v.actual : null, forecast: v.forecast }));
-    }
-    return monthly("data/es/demand", from, to, ["actual", "forecast"]);
-  });
-}
-
-// ---------- Generation ----------
-
-export const getMixDaily = () => daily("mix", () => sampleDaily((d, hrs) => {
-  const real = hrs.filter(x => x.t < Date.now());
-  if (real.length < 20) return null;
-  const row = { date: d };
-  for (const c of MIX_COLS) row[c] = Math.round(avg(real, x => x.v[c]));
-  return row;
-}));
-
-export function getMixRaw(from, to) {
-  return cached("es-mix-" + from + "-" + to, async () => {
-    if (await isMock()) {
-      const now = horizon("actual");
-      return sampleRaw(from, to, (t, v) => {
-        if (t > now) return null;
-        const r = { t, min: 15 };
-        for (const c of MIX_COLS) r[c] = v[c];
-        return r;
-      });
-    }
-    return monthly("data/es/mix", from, to, MIX_COLS);
-  });
+  return cached("es-demand-" + from + "-" + to, () => monthly("data/es/demand", from, to, ["actual", "forecast"]));
 }
 
 // ---------- Prices ----------
 
 export const ZONES = {
-  ES: { name: "Spain", short: "ES", colour: "--z-es" },
-  FR: { name: "France", short: "FR", colour: "--z-fr" },
-  PT: { name: "Portugal", short: "PT", colour: "--z-pt" }
+  ES: { name: "Spain", adj: "Spanish", colour: "--z-es" },
+  FR: { name: "France", adj: "French", colour: "--z-fr" },
+  PT: { name: "Portugal", adj: "Portuguese", colour: "--z-pt" }
 };
-
-export const getPricesDaily = () => daily("prices", () => sampleDaily((d, hrs) => {
-  const ph = horizon("price");
-  const ok = hrs.filter(x => x.t < ph);
-  if (ok.length < 20) return null;
-  const row = { date: d };
-  for (const z of Object.keys(ZONES)) {
-    const vs = ok.map(x => x.v[z]);
-    const peak = ok.filter(x => { const w = new Date(toWall(x.t)); const wd = (w.getUTCDay() + 6) % 7; return wd < 5 && w.getUTCHours() >= 8 && w.getUTCHours() < 20; });
-    const off = ok.filter(x => !peak.includes(x));
-    const base = avg(ok, x => x.v[z]);
-    row[z + "_base"] = base;
-    row[z + "_peak"] = peak.length ? avg(peak, x => x.v[z]) : null;
-    row[z + "_off"] = avg(off, x => x.v[z]);
-    row[z + "_min"] = Math.min(...vs);
-    row[z + "_max"] = Math.max(...vs);
-    row[z + "_std"] = Math.sqrt(avg(ok, x => mul(x.v[z] - base, x.v[z] - base)));
-    row[z + "_neg"] = vs.filter(v => v < 0).length;
-    row[z + "_zero"] = 0;
-    row[z + "_negd"] = vs.filter(v => v < 0).reduce((a, v) => a - v, 0);
-  }
-  return row;
-}));
-
+// Daily prices (Z_base, Z_peak ...) joined with the market summaries
+// (cap_T, gen_T, res_mean, par_FR, par_PT) by date.
+export function getPricesDaily() {
+  return cached("es-daily-prices-market", async () => {
+    const [p, m] = await Promise.all([daily("prices"), daily("market")]);
+    const rows = p.rows.map(r => ({ ...(m.byDate.get(r.date) || {}), ...r }));
+    return table(rows);
+  });
+}
 // Day-ahead prices for ES, FR or PT: list of {t, eur, min}.
 export function getPriceRaw(zone, from, to) {
-  return cached("es-price-" + zone + "-" + from + "-" + to, async () => {
-    if (await isMock()) {
-      const ph = horizon("price");
-      return sampleRaw(from, to, (t, v) => (t >= ph ? null : { t, min: 15, eur: Math.round(mul(v[zone], 100)) / 100 }));
-    }
-    return getPrices(zone, from, to);
+  return getPrices(zone, from, to);
+}
+// One row per hour from data/es/hourly/YYYY.csv between two dates.
+export function getHourly(from, to) {
+  return cached("es-hourly-" + from + "-" + to, async () => {
+    const years = [];
+    for (let y = Number(from.slice(0, 4)); y <= Number(to.slice(0, 4)); y++) years.push(y);
+    const lo = parisMidnight(from);
+    const hi = parisMidnight(addDays(to, 1));
+    const parts = await Promise.all(years.map(y => cached("es-hourly-year-" + y, async () =>
+      toObjects(await fetchText("data/es/hourly/" + y + ".csv", { optional: true }).catch(() => ""), "t"))));
+    return parts.flat().filter(r => r.t >= lo && r.t < hi);
   });
 }
 
 // ---------- Flows (Spain's point of view: export = power leaving Spain) ----------
 
-export const getFlowsDaily = () => daily("flows", () => sampleDaily((d, hrs) => {
-  const real = hrs.filter(x => x.t < Date.now());
-  if (real.length < 20) return null;
-  const row = { date: d };
-  for (const c of ["fr_exp", "fr_imp", "pt_exp", "pt_imp"]) row[c] = Math.round(avg(real, x => x.v[c]));
-  row.fr_net = row.fr_exp - row.fr_imp;
-  row.pt_net = row.pt_exp - row.pt_imp;
-  row.net = row.fr_net + row.pt_net;
-  return row;
-}));
-
+export const getFlowsDaily = () => daily("flows");
 function toQuarterMap(points, col) {
   const out = new Map();
   for (const p of points) {
@@ -322,19 +163,13 @@ function toQuarterMap(points, col) {
   }
   return out;
 }
-
 // Physical flows by border every 15 minutes: list of {t, min, fr_exp, fr_imp, pt_exp, pt_imp, fr_net, pt_net, net}.
 export function getFlowsRaw(from, to) {
   return cached("es-flows-" + from + "-" + to, async () => {
-    if (await isMock()) {
-      const now = horizon("actual");
-      return sampleRaw(from, to, (t, v) => (t > now ? null : {
-        t, min: 15, fr_exp: v.fr_exp, fr_imp: v.fr_imp, pt_exp: v.pt_exp, pt_imp: v.pt_imp,
-        fr_net: v.fr_exp - v.fr_imp, pt_net: v.pt_exp - v.pt_imp, net: v.fr_exp - v.fr_imp + v.pt_exp - v.pt_imp
-      }));
-    }
     // France-Spain is stored from France's side (export = France to Spain).
-    const [fr, pt] = await Promise.all([getFlows("ES", from, to), monthly("data/es/flows/PT", from, to, ["export_mw", "import_mw"])]);
+    const both = await Promise.all([getFlows("ES", from, to), monthly("data/es/flows/PT", from, to, ["export_mw", "import_mw"])]);
+    const fr = both.at(0);
+    const pt = both.at(1);
     const frExp = toQuarterMap(fr, "import_mw");
     const frImp = toQuarterMap(fr, "export_mw");
     const ptExp = toQuarterMap(pt, "export_mw");
@@ -350,11 +185,22 @@ export function getFlowsRaw(from, to) {
   });
 }
 
+// ---------- Alerts for the bell ----------
+
+export async function getEsAlerts() {
+  try {
+    const text = await fetchText("data/es/alerts.json", { optional: true });
+    return text ? JSON.parse(text).alerts || [] : [];
+  } catch (error) {
+    return [];
+  }
+}
+
 // ---------- Freshness line under the tabs ----------
 
 export async function freshness(page) {
   const today = todayParis();
-  const lastOf = (rows, col) => { for (let i = rows.length - 1; i >= 0; i--) { const r = rows[i]; if (r[col] != null) return r.t; } return null; };
+  const lastOf = (rows, col) => { for (let i = rows.length - 1; i >= 0; i--) { const r = rows.at(i); if (r[col] != null) return r.t; } return null; };
   const parts = [];
   try {
     if (page === "demand" || page === "overview") {
@@ -363,10 +209,10 @@ export async function freshness(page) {
     }
     if (page === "prices" || page === "overview") {
       const rows = await getPriceRaw("ES", today, addDays(today, 1));
-      const t = rows.length ? rows[rows.length - 1].t : null;
+      const t = rows.length ? rows.at(-1).t : null;
       if (t) parts.push("prices to " + fmtLongDate(dateKey(t)).replace(/ \d{4}$/, ""));
     }
-    if (page === "generation" || page === "overview") {
+    if (page === "generation" || page === "overview" || page === "prices") {
       const t = lastOf(await getMixRaw(addDays(today, -1), today), "wind");
       if (t) parts.push("mix to " + fmtTime(t + QUARTER));
     }
@@ -376,5 +222,5 @@ export async function freshness(page) {
     }
   } catch (error) { console.error(error); }
   const text = parts.join(" · ");
-  return text ? text[0].toUpperCase() + text.slice(1) : "";
+  return text ? text.at(0).toUpperCase() + text.slice(1) : "";
 }
