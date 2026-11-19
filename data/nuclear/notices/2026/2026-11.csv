@@ -1107,3 +1107,10 @@ Prochain palier : 336 MW
 --------
 Unit is currently ramping up by steps
 Next step : 336 MW."
+EDF-05470_EDF_T_00343124,1,2026-11-19T07:32Z,17W100P100P0131U,GRAVELINES 2,910,PLANNED,FORESEEN_MAINTENANCE,ACTIVE,2026-11-21T06:10Z,2026-11-22T00:10Z,2026-11-21T06:10Z/2026-11-22T00:10Z/585/325,-
+EDF-05470_EDF_T_00343115,1,2026-11-19T07:41Z,17W100P100P0090I,BELLEVILLE 1,1310,UNPLANNED,FAILURE,ACTIVE,2026-11-19T07:40Z,2026-11-20T07:40Z,2026-11-19T07:40Z/2026-11-20T07:40Z/888/422,"La durée indiquée de l'indisponibilité correspond à une durée forfaitaire de 24h, évaluée sur la base du retour d'expérience sur le parc nucléaire.
+Une nouvelle version sera publiée en fonction des diagnostics et des analyses qui seront réalisés.
+--------
+The duration of the unavailability is a pre-defined 24 hours period, assessed on the basis of the nuclear fleet feedback
+A new version will be published according to diagnostic and technical instruction."
+EDF-05470_EDF_T_00343125,1,2026-11-19T07:44Z,17W100P100P0109N,CHINON 4,905,PLANNED,FORESEEN_MAINTENANCE,ACTIVE,2026-11-21T17:00Z,2026-11-21T18:30Z,2026-11-21T17:00Z/2026-11-21T18:30Z/798/107,-
