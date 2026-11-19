@@ -1085,3 +1085,15 @@ Le niveau de puissance pourra être réinterrogé si les conditions économiques
 --------
 Test at stable power.
 The power level will be reassessed depending on economic conditions."
+EDF-05470_EDF_T_00342993,3,2026-11-19T06:17Z,17W100P100P0145J,ST ALBAN 1,1335,UNPLANNED,COMPLEMENTARY_INFORMATION,INACTIVE,2026-11-18T20:47Z,2026-11-19T06:14Z,2026-11-18T20:47Z/2026-11-19T06:14Z/1000/335,"Grève
+La baisse de production est susceptible de se prolonger jusqu'à la fin du mouvement social annoncé.
+--------
+Strike
+The production restriction is likely to continue until the end of the national strike."
+EDF-05470_EDF_T_00343032,2,2026-11-19T06:19Z,17W100P100P0145J,ST ALBAN 1,1335,UNPLANNED,FAILURE,INACTIVE,2026-11-19T00:35Z,2026-11-19T06:16Z,2026-11-19T00:35Z/2026-11-19T06:16Z/1000/335,-
+EDF-05470_EDF_T_00343073,1,2026-11-19T06:22Z,17W100P100P0103Z,CATTENOM 2,1300,PLANNED,FORESEEN_MAINTENANCE,ACTIVE,2026-11-21T02:00Z,2026-11-21T03:00Z,2026-11-21T02:00Z/2026-11-21T03:00Z/1100/200,-
+EDF-05470_EDF_T_00343080,1,2026-11-19T06:28Z,17W100P100P0148D,ST LAURENT 2,915,UNPLANNED,COMPLEMENTARY_INFORMATION,ACTIVE,2026-11-19T06:27Z,2026-11-19T14:00Z,2026-11-19T06:27Z/2026-11-19T14:00Z/180/735,"Grève
+La baisse de production est susceptible de se prolonger jusqu'à la fin du mouvement social annoncé.
+--------
+Strike
+The production restriction is likely to continue until the end of the national strike."
