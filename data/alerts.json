@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-11-20T23:01Z",
+ "generated_utc": "2026-11-20T23:16Z",
  "alerts": [
   {
    "id": "hydro-high-since-2026-11-20",
@@ -13,8 +13,8 @@
    "id": "net_exports-high-since-2026-11-20",
    "date": "2026-11-20",
    "level": "since",
-   "title": "Highest net exports (daily average) since 8 May 2026",
-   "detail": "15.9 GW on 20 Nov 2026.",
+   "title": "Highest net exports (daily average) since 13 May 2026",
+   "detail": "15.5 GW on 20 Nov 2026.",
    "link": "flows/explorer?subject=net"
   }
  ]
