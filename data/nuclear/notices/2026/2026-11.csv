@@ -1234,3 +1234,8 @@ Prochain palier : PMD
 --------
 Unit is currently ramping up by steps
 Next step : PMD"
+EDF-05470_EDF_T_00333178,4,2026-11-20T11:23Z,17W100P100P00974,BUGEY 3,910,PLANNED,COMPLEMENTARY_INFORMATION,ACTIVE,2026-11-20T20:00Z,2026-11-20T23:00Z,2026-11-20T20:00Z/2026-11-20T23:00Z/422/488,"Baisse avant arrêt 
+Baisse à 422 MW : (1h) – palier à 422 MW : (2h) - baisse jusqu’à découplage 
+_______________________________________
+Unit Ramping down before outage 
+Ramp down to 422 MW : (1h) – threshold at 422 MW : (2h) – ramp down until decoupling"
