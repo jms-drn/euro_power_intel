@@ -1,6 +1,14 @@
 {
- "generated_utc": "2026-11-21T11:48Z",
+ "generated_utc": "2026-11-21T12:06Z",
  "alerts": [
+  {
+   "id": "es-neg-2026-11-22",
+   "date": "2026-11-22",
+   "level": "event",
+   "title": "Negative Spanish prices tomorrow",
+   "detail": "3.25 hours below zero, lowest -0.30 €/MWh.",
+   "link": "es/prices/negative"
+  },
   {
    "id": "es-base-hi-2026-11-21",
    "date": "2026-11-21",
