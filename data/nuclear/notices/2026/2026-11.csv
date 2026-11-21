@@ -1284,3 +1284,19 @@ After its restart, the plant will gradually return by various load threshold to 
 The ramp-up period will take at least 48 hours.
 Early restart, subject to TSO agreement."
 EDF-05470_EDF_T_00343124,5,2026-11-21T08:29Z,17W100P100P0131U,GRAVELINES 2,910,PLANNED,FORESEEN_MAINTENANCE,ACTIVE,2026-11-21T06:25Z,2026-11-21T23:00Z,2026-11-21T06:25Z/2026-11-21T23:00Z/531/379,-
+EC-EDF-05470-EDF-T-00104283,9,2026-11-21T10:09Z,17W100P100P0123T,DAMPIERRE 4,890,PLANNED,COMPLEMENTARY_INFORMATION,ACTIVE,2026-08-21T22:00Z,2026-11-24T22:00Z,2026-08-21T22:00Z/2026-11-24T22:00Z/0/890,"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance.
+La remontée durera au moins 48h.
+Retour anticipé d'arrêt programmé, sous réserve d'accord du gestionnaire de réseau de transport.
+--------
+After its restart, the plant will gradually return by various load threshold to full power.
+The ramp-up period will take at least 48 hours.
+Early restart, subject to TSO agreement."
+EC-EDF-05470-EDF-T-00105341,14,2026-11-21T10:12Z,17W100P100P0115S,CRUAS 1,915,PLANNED,COMPLEMENTARY_INFORMATION,ACTIVE,2026-10-16T20:55Z,2026-11-23T11:00Z,2026-10-16T20:55Z/2026-11-23T11:00Z/0/915,"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance.
+La remontée durera au moins 48h.
+Premier palier à atteindre : 98 MW.
+Retour anticipé d'arrêt programmé, sous réserve d'accord du gestionnaire de réseau de transport.
+-
+After its restart, the plant will gradually return by various load threshold to full power.
+The ramp-up period will take at least 48 hours.
+First threshold after restart : 98 MW.
+Early restart, subject to TSO agreement."
