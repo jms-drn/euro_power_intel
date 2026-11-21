@@ -1,11 +1,11 @@
 {
- "generated_utc": "2026-11-21T22:48Z",
+ "generated_utc": "2026-11-21T23:02Z",
  "alerts": [
   {
    "id": "es-neg-2026-11-22",
    "date": "2026-11-22",
    "level": "event",
-   "title": "Negative Spanish prices tomorrow",
+   "title": "Negative Spanish prices today",
    "detail": "3.25 hours below zero, lowest -0.30 €/MWh.",
    "link": "es/prices/negative"
   },
@@ -40,30 +40,6 @@
    "title": "Spanish baseload 52.13 €/MWh",
    "detail": "18 Nov 2026: lowest since 4 Jul 2026.",
    "link": "es/prices/explorer"
-  },
-  {
-   "id": "es-base-lo-2026-11-17",
-   "date": "2026-11-17",
-   "level": "since",
-   "title": "Spanish baseload 64.56 €/MWh",
-   "detail": "17 Nov 2026: lowest since 5 Jul 2026.",
-   "link": "es/prices/explorer"
-  },
-  {
-   "id": "es-peak-hi-2026-11-17",
-   "date": "2026-11-17",
-   "level": "since",
-   "title": "Spanish demand peak 34.8 GW",
-   "detail": "17 Nov 2026: highest since 2 Oct 2026.",
-   "link": "es/demand/explorer"
-  },
-  {
-   "id": "es-wind-hi-2026-11-17",
-   "date": "2026-11-17",
-   "level": "since",
-   "title": "Spanish wind output averaged 17.9 GW",
-   "detail": "17 Nov 2026: highest since 9 Jan 2026.",
-   "link": "es/generation/explorer"
   }
  ]
 }

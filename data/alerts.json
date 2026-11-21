@@ -1,21 +1,4 @@
 {
- "generated_utc": "2026-11-21T22:46Z",
- "alerts": [
-  {
-   "id": "hydro-high-since-2026-11-20",
-   "date": "2026-11-20",
-   "level": "since",
-   "title": "Highest hydro output (daily average) since 29 May 2026",
-   "detail": "7.4 GW on 20 Nov 2026.",
-   "link": "generation/explorer?subject=hydro"
-  },
-  {
-   "id": "net_exports-high-since-2026-11-20",
-   "date": "2026-11-20",
-   "level": "since",
-   "title": "Highest net exports (daily average) since 13 May 2026",
-   "detail": "15.5 GW on 20 Nov 2026.",
-   "link": "flows/explorer?subject=net"
-  }
- ]
+ "generated_utc": "2026-11-21T23:01Z",
+ "alerts": []
 }
