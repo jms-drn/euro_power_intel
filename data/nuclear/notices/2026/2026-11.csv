@@ -1300,3 +1300,8 @@ After its restart, the plant will gradually return by various load threshold to 
 The ramp-up period will take at least 48 hours.
 First threshold after restart : 98 MW.
 Early restart, subject to TSO agreement."
+EDF-05470_EDF_T_00342224,19,2026-11-21T10:35Z,17W100P100P0105V,CATTENOM 4,1300,PLANNED,COMPLEMENTARY_INFORMATION,INACTIVE,2026-11-16T08:00Z,2026-11-21T10:34Z,2026-11-16T08:00Z/2026-11-21T10:34Z/1211/89,"Remontée par paliers en cours
+Prochain palier : PMD 
+--------
+Unit is currently ramping up by steps
+Next step : PMD"
