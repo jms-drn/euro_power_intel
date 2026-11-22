@@ -1352,3 +1352,8 @@ The ramp-up period will take at least 48 hours.
 First threshold after restart : 98 MW.
 Early restart, subject to TSO agreement."
 EDF-05470_EDF_T_00336631,6,2026-11-22T18:45Z,17W100P100P0145J,ST ALBAN 1,1335,PLANNED,FORESEEN_MAINTENANCE,INACTIVE,2026-11-22T02:15Z,2026-11-22T18:43Z,2026-11-22T02:15Z/2026-11-22T18:43Z/706/629,-
+EDF-05470_EDF_T_00343919,1,2026-11-22T19:59Z,17W100P100P0119K,CRUAS 4,915,UNPLANNED,FAILURE,ACTIVE,2026-11-22T19:57Z,2026-11-23T19:57Z,2026-11-22T19:57Z/2026-11-23T19:57Z/785/130,"La durée indiquée de l'indisponibilité correspond à une durée forfaitaire de 24h, évaluée sur la base du retour d'expérience sur le parc nucléaire.
+Une nouvelle version sera publiée en fonction des diagnostics et des analyses qui seront réalisés.
+--------
+The duration of the unavailability is a pre-defined 24 hours period, assessed on the basis of the nuclear fleet feedback
+A new version will be published according to diagnostic and technical instruction."
