@@ -1357,3 +1357,14 @@ Une nouvelle version sera publiée en fonction des diagnostics et des analyses q
 --------
 The duration of the unavailability is a pre-defined 24 hours period, assessed on the basis of the nuclear fleet feedback
 A new version will be published according to diagnostic and technical instruction."
+EDF-05470_EDF_T_00343919,2,2026-11-22T23:00Z,17W100P100P0119K,CRUAS 4,915,UNPLANNED,FAILURE,INACTIVE,2026-11-22T19:57Z,2026-11-22T22:58Z,2026-11-22T19:57Z/2026-11-22T22:58Z/785/130,"La durée indiquée de l'indisponibilité correspond à une durée forfaitaire de 24h, évaluée sur la base du retour d'expérience sur le parc nucléaire.
+Une nouvelle version sera publiée en fonction des diagnostics et des analyses qui seront réalisés.
+--------
+The duration of the unavailability is a pre-defined 24 hours period, assessed on the basis of the nuclear fleet feedback
+A new version will be published according to diagnostic and technical instruction."
+EDF-05470_EDF_T_00342471,16,2026-11-22T23:01Z,17W100P100P0119K,CRUAS 4,915,PLANNED,COMPLEMENTARY_INFORMATION,ACTIVE,2026-11-17T01:56Z,2026-11-23T22:00Z,2026-11-17T01:56Z/2026-11-23T22:00Z/798/117,"Remontée par paliers en cours
+Prochain palier : PMD
+--------
+Unit is currently ramping up by steps
+Next step : PMD"
+EDF-05470_EDF_T_00343904,3,2026-11-22T23:14Z,17W100P100P0093C,BLAYAIS 2,910,UNPLANNED,FAILURE,ACTIVE,2026-11-22T14:56Z,2026-11-23T00:45Z,2026-11-22T14:56Z/2026-11-23T00:45Z/0/910,-
