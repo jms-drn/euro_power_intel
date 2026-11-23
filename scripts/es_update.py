@@ -9,9 +9,10 @@ update.py (every 15 minutes through the refresh service).
   while the auction publishes.
 - Spain-Portugal physical flows (ENTSO-E): the past two days, at most every
   55 minutes.
+- Hydro by type (ENTSO-E): the past four days, at most every 55 minutes.
 Then Spain's daily summaries, price summaries, market and hydro summaries
-(this year) and alerts are rebuilt. Reservoir levels come from their own
-workflow (reservoirs-es.yml).
+(this year) and alerts are rebuilt. Reservoir, basin, rainfall and river
+flow data come from their own workflow (reservoirs-es.yml).
 
 Never stops the workflow: errors are printed and the run carries on, so the
 France data is always saved.
@@ -21,6 +22,8 @@ from datetime import datetime, timedelta, timezone
 
 import es_alerts
 import es_hydro
+import es_hydro_split
+import es_hydro_types
 import es_market
 import es_prices
 import es_store
@@ -76,9 +79,17 @@ def run():
             traceback.print_exc()
             errors.append("PT flows: " + str(error))
 
+    if due(state, "hydro_split", 55):
+        try:
+            print("Spain hydro by type: " + str(es_hydro_split.update_recent()) + " hours changed")
+            state["hydro_split"] = fmt_utc(now)
+        except Exception as error:  # noqa: BLE001
+            traceback.print_exc()
+            errors.append("hydro by type: " + str(error))
+
     steps = (("summaries", es_store.summarise), ("price summaries", es_prices.summarise_prices),
              ("market summaries", es_market.build_recent), ("hydro summaries", es_hydro.build_recent),
-             ("alerts", es_alerts.build))
+             ("hydro type summaries", es_hydro_types.build_recent), ("alerts", es_alerts.build))
     for name, step in steps:
         try:
             step()
