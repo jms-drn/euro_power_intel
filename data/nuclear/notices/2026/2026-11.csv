@@ -1390,3 +1390,12 @@ Premier palier à atteindre : 98 MW.
 After its restart, the plant will gradually return by various load threshold to full power.
 The ramp-up period will take at least 48 hours.
 First threshold after restart : 98 MW."
+EC-EDF-05470-EDF-T-00104283,11,2026-11-23T10:57Z,17W100P100P0123T,DAMPIERRE 4,890,PLANNED,COMPLEMENTARY_INFORMATION,ACTIVE,2026-08-21T22:00Z,2026-11-24T04:00Z,2026-08-21T22:00Z/2026-11-24T04:00Z/0/890,"Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance
+La remontée durera au moins 48h
+Premier palier à atteindre : 27 MW
+Retour anticipé d'arrêt programmé, sous réserve d'accord du gestionnaire de réseau de transport
+-
+After its restart, the plant will gradually return by various load threshold to full power
+The ramp-up period will take at least 48 hours
+First threshold after restart : 27 MW
+Early restart, subject to TSO agreement."
