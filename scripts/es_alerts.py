@@ -6,12 +6,14 @@ a list of {id, date, level, title, detail, link}, where level is "record"
 (highest or lowest in the whole history, at least a year of it), "since"
 (highest or lowest for at least 7 days for prices, 30 days for demand and
 generation, 5 years for reserves at the same time of year) or "event"
-(negative prices). Links start with "es/" so they open the Spain pages.
+(negative prices, large reservoir moves). Links start with "es/" so they
+open the Spain pages. Basin and reservoir events come from es_alerts_hydro.
 Code note: no asterisks or double underscores (chat formatting strips them).
 """
 import json
 from datetime import date, datetime, timedelta, timezone
 
+import es_alerts_hydro
 from es_store import DAILY_DIR, ES_DIR, read_rows
 from store import PARIS
 
@@ -178,6 +180,7 @@ def build():
     # Reservoir bulletins refer to a Tuesday and are published a day or two
     # later, so the last eight days are checked.
     reservoir_alerts(today - timedelta(days=8), alerts)
+    es_alerts_hydro.build(today - timedelta(days=8), alerts)
     alerts.sort(key=lambda a: a["date"], reverse=True)
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps({"generated_utc": datetime.now(UTC).strftime("%Y-%m-%dT%H:%MZ"), "alerts": alerts},
