@@ -1442,3 +1442,9 @@ Premier palier à atteindre : 98 MW.
 After its restart, the plant will gradually return by various load threshold to full power.
 The ramp-up period will take at least 48 hours.
 First threshold after restart : 98 MW."
+EDF-05470_EDF_T_00342471,20,2026-11-23T17:42Z,17W100P100P0119K,CRUAS 4,915,PLANNED,COMPLEMENTARY_INFORMATION,ACTIVE,2026-11-17T01:56Z,2026-11-28T16:00Z,2026-11-17T01:56Z/2026-11-28T16:00Z/370/545,"Remontée par paliers en cours
+Prochain palier : PMD
+--------
+Unit is currently ramping up by steps
+Next step : PMD"
+EDF-05470_EDF_T_00343972,6,2026-11-23T17:42Z,17W100P100P0119K,CRUAS 4,915,UNPLANNED,FAILURE,ACTIVE,2026-11-23T04:09Z,2026-11-24T16:30Z,2026-11-23T04:09Z/2026-11-24T16:30Z/370/545,-
