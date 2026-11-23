@@ -98,8 +98,8 @@ const ES_PAGES = {
   hydro: {
     label: "Hydro", accent: "Hydro Intelligence", doc: "Spain Power Hydro Intelligence",
     tabs: {
+      overview: { label: "Overview", load: async root => new (await es()).EsHydroMapFull(root) },
       year: { label: "This year", load: async root => new (await es()).EsHydroYear(root) },
-      map: { label: "Reserves map", load: async root => new (await es()).EsHydroMapFull(root) },
       profile: { label: "Daily profile", load: async root => new (await es()).EsHydroProfile(root) },
       value: { label: "Value", load: async root => new (await es()).EsHydroValue(root) },
       pumping: { label: "Pumping", load: async root => new (await es()).EsHydroPumping(root) }
