@@ -7,6 +7,8 @@ import { addDays, dateKey, daysBetween, fmtDateTime, fmtFromTo, fmtNumber, fmtPe
 import { BOTH, ENTSOE, PRICE_FIRST, ZONES, getHourly } from "./es-data.js";
 import { Base, EUR, MONTHS, cards, eur, headlineBlock, heatSpec, localHour, meanOf, mul, pct, quantile, scatterSpec, selectHtml, signed, sumOf, yearColour } from "./es-common.js";
 
+// Hydro in the hourly file is REE's net figure (output minus pumping): counted
+// when positive in shares, so every year is measured the same way.
 const total = r => ["nuclear", "wind", "solar", "hydro", "ccgt", "coal", "chp", "ren_th"].reduce((a, k) => a + Math.max(0, r[k] || 0), 0);
 const gw = v => (v == null ? null : v / 1000);
 const CONDITIONS = {
@@ -17,7 +19,7 @@ const CONDITIONS = {
   wind: { label: "Wind output (GW)", short: "wind output", unit: "GW", width: 2, get: r => gw(r.wind) },
   nuclear: { label: "Nuclear output (GW)", short: "nuclear output", unit: "GW", width: 0.5, get: r => gw(r.nuclear) },
   gas: { label: "Combined-cycle gas output (GW)", short: "gas output", unit: "GW", width: 1, get: r => gw(r.ccgt) },
-  hydro: { label: "Hydro output (GW)", short: "hydro output", unit: "GW", width: 1, get: r => gw(r.hydro) },
+  hydro: { label: "Hydro output, net of pumping (GW)", short: "net hydro output", unit: "GW", width: 1, get: r => gw(r.hydro) },
   residual: { label: "Residual demand (GW)", short: "residual demand", unit: "GW", width: 2, get: r => gw(r.residual) },
   net_exp: { label: "Net exports (GW)", short: "net exports", unit: "GW", width: 1, get: r => gw(r.net_exp) },
   demand: { label: "Demand (GW)", short: "demand", unit: "GW", width: 2, get: r => gw(r.demand) },
@@ -25,6 +27,8 @@ const CONDITIONS = {
 };
 const STACK = [["nuclear", "Nuclear", "--f-nuclear"], ["wind", "Wind", "--f-wind"], ["solar", "Solar", "--f-solar"], ["hydro", "Hydro", "--f-hydro"],
   ["ccgt", "Combined cycle (gas)", "--f-gas"], ["chp", "Cogeneration and other", "--f-chp"], ["ren_th", "Renewable thermal", "--f-bio"], ["coal", "Coal", "--f-coal"]];
+// The mix chart draws hydro before pumping, with pumping below zero.
+const stackVal = (r, k) => (k === "hydro" ? Math.max(0, r.hydro_gross ?? r.hydro ?? 0) : Math.max(0, r[k] || 0));
 const yearOf = t => Number(dateKey(t).slice(0, 4));
 const monthOf = t => Number(dateKey(t).slice(5, 7)) - 1;
 const mmdd = t => dateKey(t).slice(5);
@@ -65,10 +69,10 @@ export class EsMixPrice extends Base {
       xType: "time", xLabel: fmtDateTime, yName: "€/MWh", zeroLine: true, source: ENTSOE,
       series: ["pt", "fr", "es"].map(z => ({ name: ZONES[z.toUpperCase()].name, colour: ZONES[z.toUpperCase()].colour, type: "line", width: z === "es" ? 2.4 : 1.3, unit: "€/MWh", decimals: 2, data: recent.map(r => [r.t, r[z]]) }))
     });
-    this.mixPanel.setTitle("Generation mix", "GW, stacked; pumping below zero");
+    this.mixPanel.setTitle("Generation mix", "GW, stacked; hydro before pumping, pumping below zero");
     this.mixPanel.render({
       xType: "time", xLabel: fmtDateTime, yName: "GW", zeroLine: true, source: "REE (Spanish TSO)",
-      series: [...STACK.map(k => ({ name: k.at(1), colour: k.at(2), type: "line", stack: "mix", areaOpacity: 0.85, width: 0.6, symbols: false, unit: "GW", decimals: 2, data: recent.map(r => [r.t, Math.max(0, r[k.at(0)] || 0) / 1000]) })),
+      series: [...STACK.map(k => ({ name: k.at(1), colour: k.at(2), type: "line", stack: "mix", areaOpacity: 0.85, width: 0.6, symbols: false, unit: "GW", decimals: 2, data: recent.map(r => [r.t, stackVal(r, k.at(0)) / 1000]) })),
         { name: "Pumping", colour: "--s-ly", type: "line", stack: "pump", areaOpacity: 0.6, width: 0.6, symbols: false, unit: "GW", decimals: 2, data: recent.map(r => [r.t, (r.pump || 0) / 1000]) }]
     });
     const pts = rows.map(r => ({ x: c.get(r), p: r.es, t: r.t })).filter(o => o.x != null && Number.isFinite(o.x));
