@@ -1,0 +1,58 @@
+name: Backfill Spain hydro detail (one-off)
+# Start by hand from the Actions tab. Downloads Spain's hydro generation by
+# type from ENTSO-E since 2015, and MITECO's basin levels (since 1988),
+# rainfall (since 1995), river flows (since 2001), basin outlines and
+# reservoir locations; then rebuilds the hydro summaries and alerts.
+# Takes about 15-30 minutes. Safe to re-run. Shares the rte-data queue, so
+# it never clashes with the 15-minute update.
+on:
+  workflow_dispatch:
+    inputs:
+      parts:
+        description: "What to download: all, split (ENTSO-E hydro by type) or basins (MITECO)"
+        required: false
+        default: "all"
+permissions:
+  contents: write
+concurrency:
+  group: rte-data
+  cancel-in-progress: false
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
+      PARTS: ${{ inputs.parts }}
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Download ENTSO-E hydro by type
+        if: ${{ inputs.parts != 'basins' }}
+        run: python scripts/es_hydro_split.py --from 2015
+      - name: Download MITECO basins, rainfall, river flows and map
+        if: ${{ inputs.parts != 'split' }}
+        run: python scripts/es_basins.py --from 1988 --outlines
+      - name: Rebuild hydro summaries and alerts
+        run: python scripts/es_hydro_rebuild.py
+      - name: Save
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/es
+          git diff --cached --quiet && { echo "Nothing new"; exit 0; }
+          git commit -q -m "Spain hydro detail backfill $(date -u '+%Y-%m-%d %H:%M') UTC"
+          for attempt in 1 2 3; do
+            git push origin HEAD:main && exit 0
+            echo "Push rejected (attempt $attempt); rebasing on the latest version"
+            sleep 20
+            git fetch origin main
+            git rebase -X theirs origin/main || { git rebase --abort; exit 1; }
+          done
+          echo "Could not save after 3 attempts"
+          exit 1
