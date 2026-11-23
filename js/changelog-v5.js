@@ -1,10 +1,35 @@
-// Version history shown in the "What's new" panel and the footers: the v5.0
-// entry, then every earlier release from changelog.js. Newest first.
+// Version history shown in the "What's new" panel and the footers: the v5
+// entries, then every earlier release from changelog.js. Newest first.
 import { CHANGELOG as EARLIER } from "./changelog.js";
 
-export const VERSION = "5.0";
+export const VERSION = "5.1";
 
-const V5 = {
+const V51 = {
+  version: "5.1",
+  date: "Nov 2026",
+  title: "Spain: a Hydro page, with MITECO's reservoir levels since 1988",
+  sections: [
+    {
+      heading: "New: Spain → Hydro",
+      items: [
+        "Hydro year: hydroelectric energy and water in Spain's reservoirs from MITECO's weekly bulletin since 1988, through the hydro year (October to September) against last year and the 5- and 10-year average and range, with hydro output since 1 October and an estimate of weekly inflow.",
+        "Daily profile: the average day of hydro output for any year and month against last year and the five years before, a month-by-hour map of where this year differs, and the evening lift: how far hydro has moved out of the solar hours into the evening, year by year.",
+        "Value: what hydro output earned and why it changed, split into the price level, the shape of prices through the day and when hydro ran; how much of hydro's output falls in each day's dearest hours; and an implied water value set against reservoir fill.",
+        "Pumping: what pumped-storage plants paid to pump and earned generating, the spread between the two, how much pumping happens at zero or negative prices, and their average day (from Dec 2024, when REE starts publishing pumping).",
+        "The bell flags Spanish hydro reserves that are the highest or lowest for the time of year in at least five years, and the largest weekly rises and falls."
+      ]
+    },
+    {
+      heading: "Changes",
+      items: [
+        "Spanish hydro is now REE's real-time figure, net of pumped-storage consumption, for every year, so comparisons with earlier years are like for like. Hydro before pumping and pumping itself are shown separately from Dec 2024, and the mix charts still draw hydro before pumping with pumping below zero.",
+        "Capture Prices: the chart legend no longer shows simple averages of the monthly points, which differed from the output-weighted figures in the cards. The cards give the period's capture prices."
+      ]
+    }
+  ]
+};
+
+const V50 = {
   version: "5.0",
   date: "Nov 2026",
   title: "European Power Intelligence: Spain, a market picker and a new home page",
@@ -45,11 +70,11 @@ const V5 = {
     {
       heading: "Data",
       items: [
-        "Spanish demand and generation are stored every 15 minutes from REE's 5-minute data, mainland only. Hydro is shown before pumping, with pumping as its own series; solar is PV plus solar thermal.",
+        "Spanish demand and generation are stored every 15 minutes from REE's 5-minute data, mainland only. Solar is PV plus solar thermal.",
         "Portuguese day-ahead prices and Spain–Portugal flows are added from the ENTSO-E Transparency Platform."
       ]
     }
   ]
 };
 
-export const CHANGELOG = [V5, ...EARLIER];
+export const CHANGELOG = [V51, V50, ...EARLIER];
