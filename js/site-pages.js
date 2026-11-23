@@ -95,6 +95,15 @@ const ES_PAGES = {
       explorer: { label: "Explorer", load: async root => (await es()).esGenExplorer(root) }
     }
   },
+  hydro: {
+    label: "Hydro", accent: "Hydro Intelligence", doc: "Spain Power Hydro Intelligence",
+    tabs: {
+      year: { label: "Hydro year", load: async root => new (await es()).EsHydroYear(root) },
+      profile: { label: "Daily profile", load: async root => new (await es()).EsHydroProfile(root) },
+      value: { label: "Value", load: async root => new (await es()).EsHydroValue(root) },
+      pumping: { label: "Pumping", load: async root => new (await es()).EsHydroPumping(root) }
+    }
+  },
   flows: {
     label: "Flows", accent: "Flows Intelligence", doc: "Spain Power Flows Intelligence",
     tabs: {
