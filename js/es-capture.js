@@ -7,7 +7,7 @@ import { addDays, dateKey, dateRange, daysBetween, fmtDate, fmtFromTo, fmtMonth,
 import { BOTH, PRICE_FIRST, getHourly, getPricesDaily } from "./es-data.js";
 import { Base, EUR, GW, MONTHS, cards, headlineBlock, localHour, meanOf, mul, pct, scatterSpec, selectHtml, signed, yearColour } from "./es-common.js";
 
-const TECHS = [["solar", "Solar", "--f-solar"], ["wind", "Wind", "--f-wind"], ["nuclear", "Nuclear", "--f-nuclear"], ["hydro", "Hydro", "--f-hydro"], ["ccgt", "Combined cycle (gas)", "--f-gas"]];
+const TECHS = [["solar", "Solar", "--f-solar"], ["wind", "Wind", "--f-wind"], ["nuclear", "Nuclear", "--f-nuclear"], ["hydro", "Hydro (net of pumping)", "--f-hydro"], ["ccgt", "Combined cycle (gas)", "--f-gas"]];
 const techName = k => TECHS.find(t => t.at(0) === k).at(1);
 const pp = v => signed(v, x => fmtNumber(x, 1) + " pp");
 const monthDates = (y, m) => dateRange(`${y}-${String(m + 1).padStart(2, "0")}-01`, addDays(m === 11 ? `${y + 1}-01-01` : `${y}-${String(m + 2).padStart(2, "0")}-01`, -1));
@@ -75,10 +75,10 @@ export class EsCapture extends Base {
     this.pricePanel.render({
       xType: "time", xLabel, axisLabel: s.res === "1M" ? fmtMonth : undefined, xHeader: "Period", yName: "€/MWh", zeroLine: true, source: BOTH,
       series: [
-        { name: "Baseload", colour: "--s-ly", type: "line", dashed: true, width: 1.6, unit: "€/MWh", decimals: 2, data: ks.map(k => [parisMidnight(k), capture(daily, groups.get(k), "solar").base]) },
-        ...TECHS.map(t => ({ name: t.at(1), colour: t.at(2), type: "line", width: t.at(0) === s.tech ? 2.6 : 1.5, unit: "€/MWh", decimals: 2, data: ks.map(k => [parisMidnight(k), capture(daily, groups.get(k), t.at(0)).price]) }))
+        { name: "Baseload", colour: "--s-ly", type: "line", dashed: true, width: 1.6, unit: "€/MWh", decimals: 2, avg: false, data: ks.map(k => [parisMidnight(k), capture(daily, groups.get(k), "solar").base]) },
+        ...TECHS.map(t => ({ name: t.at(1), colour: t.at(2), type: "line", width: t.at(0) === s.tech ? 2.6 : 1.5, unit: "€/MWh", decimals: 2, avg: false, data: ks.map(k => [parisMidnight(k), capture(daily, groups.get(k), t.at(0)).price]) }))
       ],
-      notes: ["Capture price: the average Spanish day-ahead price weighted by the technology's output each quarter-hour. Hydro is output before pumping from Dec 2024."]
+      notes: ["Capture price: the average Spanish day-ahead price weighted by the technology's output each quarter-hour. For the whole period, see the cards above: those are weighted by output, so months when a technology ran more count for more. A simple average of the points in this chart would not be. Hydro is REE's real-time figure, net of pumped-storage consumption, counted only when positive, so every year is measured the same way."]
     });
     const lastYear = Number(dates.at(-1).slice(0, 4));
     const years = [lastYear - 4, lastYear - 3, lastYear - 2, lastYear - 1, lastYear].filter(y => y >= 2015);
@@ -114,11 +114,12 @@ export class EsCapture extends Base {
     const cats = byHour.map((x, h) => String(h).padStart(2, "0") + ":00");
     this.hourPanel.setTitle("Average output and price by hour of day", `${fmtPeriod(hFrom, to)} · GW (left), €/MWh (right), local time`);
     this.hourPanel.render({
-      xType: "category", categories: cats, xLabel: x => x, xHeader: "Hour", yName: "GW", yMin: 0, yAxis2: { name: "€/MWh", format: v => fmtNumber(v, 0) }, source: BOTH,
+      xType: "category", categories: cats, xLabel: x => x, xHeader: "Hour", yName: "GW", zeroLine: true, yAxis2: { name: "€/MWh", format: v => fmtNumber(v, 0) }, source: BOTH,
       series: [
         ...TECHS.map(t => ({ name: t.at(1), colour: t.at(2), type: "line", width: 1.8, unit: "GW", decimals: 2, avg: false, data: byHour.map((list, h) => [h, meanOf(list.map(r => r[t.at(0)])) / 1000]) })),
         { name: "Spanish price", colour: "--s-actual", type: "line", dashed: true, width: 2.4, yAxis: 1, unit: "€/MWh", decimals: 2, avg: false, data: byHour.map((list, h) => [h, meanOf(list.map(r => r.es))]) }
-      ]
+      ],
+      notes: ["Hydro here is REE's net figure, so it can dip below zero in the hours when pumping exceeds hydro output."]
     });
   }
 }
