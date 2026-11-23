@@ -1,11 +1,11 @@
 {
- "generated_utc": "2026-11-23T22:48Z",
+ "generated_utc": "2026-11-23T23:03Z",
  "alerts": [
   {
    "id": "es-base-hi-2026-11-24",
    "date": "2026-11-24",
    "level": "since",
-   "title": "Spanish baseload 210.13 €/MWh tomorrow",
+   "title": "Spanish baseload 210.13 €/MWh",
    "detail": "24 Nov 2026: highest since 11 Nov 2026.",
    "link": "es/prices/explorer"
   },
@@ -16,6 +16,14 @@
    "title": "Spanish baseload 205.20 €/MWh",
    "detail": "23 Nov 2026: highest since 11 Nov 2026.",
    "link": "es/prices/explorer"
+  },
+  {
+   "id": "es-peak-hi-2026-11-23",
+   "date": "2026-11-23",
+   "level": "since",
+   "title": "Spanish demand peak 35.0 GW",
+   "detail": "23 Nov 2026: highest since 2 Oct 2026.",
+   "link": "es/demand/explorer"
   },
   {
    "id": "es-neg-2026-11-22",
@@ -32,22 +40,6 @@
    "title": "Spanish baseload 148.44 €/MWh",
    "detail": "21 Nov 2026: highest since 14 Nov 2026.",
    "link": "es/prices/explorer"
-  },
-  {
-   "id": "es-base-lo-2026-11-19",
-   "date": "2026-11-19",
-   "level": "since",
-   "title": "Spanish baseload 32.68 €/MWh",
-   "detail": "19 Nov 2026: lowest since 12 Jun 2026.",
-   "link": "es/prices/explorer"
-  },
-  {
-   "id": "es-neg-2026-11-19",
-   "date": "2026-11-19",
-   "level": "event",
-   "title": "Negative Spanish prices 19 Nov 2026",
-   "detail": "4 hours below zero, lowest -0.30 €/MWh.",
-   "link": "es/prices/negative"
   },
   {
    "id": "es-basin-cantabricooccidental-lo-2026-11-17",
