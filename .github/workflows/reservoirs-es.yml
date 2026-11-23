@@ -1,0 +1,61 @@
+name: Spain reservoirs (MITECO bulletin)
+# Downloads Spain's weekly reservoir levels from MITECO's public bulletin data
+# into data/es/reservoirs.csv. Runs on Tuesdays to Thursdays three times a day,
+# which catches each new bulletin within hours; runs that find nothing new
+# save nothing. Start it by hand with a first year (e.g. 1988) to download the
+# full history. Shares the rte-data queue, so it never clashes with the
+# 15-minute update.
+on:
+  schedule:
+    - cron: "20 8,14,20 1-31 1-12 2-4"
+  workflow_dispatch:
+    inputs:
+      first_year:
+        description: "Leave empty for the last 10 weeks, or enter a year (e.g. 1988) to download the history from then"
+        required: false
+        default: ""
+permissions:
+  contents: write
+concurrency:
+  group: rte-data
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      FIRST_YEAR: ${{ inputs.first_year }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Fetch reservoir levels
+        run: |
+          if [ -n "$FIRST_YEAR" ]; then python scripts/es_reservoirs.py --from "$FIRST_YEAR"; else python scripts/es_reservoirs.py; fi
+      - name: Save
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          commit_data() {
+            git add data/es/reservoirs.csv
+            if git diff --cached --quiet; then
+              echo "No new bulletin"
+              return 1
+            fi
+            git commit -q -m "Spain reservoirs $(date -u '+%Y-%m-%d %H:%M') UTC"
+          }
+          commit_data || exit 0
+          for attempt in 1 2 3; do
+            git push origin HEAD:main && exit 0
+            echo "Push rejected (attempt $attempt); starting again from the latest version"
+            sleep 20
+            git fetch origin main
+            git reset --hard origin/main
+            if [ -n "$FIRST_YEAR" ]; then python scripts/es_reservoirs.py --from "$FIRST_YEAR"; else python scripts/es_reservoirs.py; fi
+            commit_data || exit 0
+          done
+          echo "Could not save the data after 3 attempts"
+          exit 1
