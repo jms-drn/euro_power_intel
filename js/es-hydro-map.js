@@ -1,7 +1,7 @@
 // Spain Hydro: the Overview tab. A map of every basin shaded against the 5-
 // or 10-year average, last year or last week, with a date slider back to
-// 1988; cards for hydroelectric reserves, hydro output and inflow; a ranked
-// basin list with sparklines; and the chosen basin's year below.
+// 1988; cards for hydroelectric reserves, hydro output and inflow; a compact
+// ranked basin list with 12-week trend lines; and the chosen basin's year.
 // Code note: no asterisks here (chat formatting strips them when pasted).
 import { ChartPanel } from "./chart.js";
 import { card } from "./market-common.js";
@@ -9,11 +9,48 @@ import { cssVar, fmtDate, fmtLongDate, fmtNumber, heroHtml, parisMidnight } from
 import { MITECO, getMixDaily } from "./es-data.js";
 import { Base, cards, headlineBlock, meanOf, mul, selectHtml, signed } from "./es-common.js";
 import { near, shiftDate, yearsBack } from "./es-hydro.js";
-import { AGAINST, COMPARE, MEASURES, basinView, fillColour, genStats, getBasins, getReservoirPoints, inflowSeries, loadBasinMap, pickDate, scaleFor, showOptions, sparkline, useLabel, valuesOf } from "./es-hydro-map-data.js";
+import { AGAINST, COMPARE, MEASURES, basinView, fillColour, genStats, getBasins, getReservoirPoints, inflowSeries, loadBasinMap, pickDate, scaleFor, showOptions, useLabel, valuesOf } from "./es-hydro-map-data.js";
 
 const SPAIN = [[-9.6, 43.95], [3.45, 35.95]];
 const pctOf = (v, ref) => (v == null || !ref ? null : mul(v - ref, 100) / ref);
 const side = v => (v >= 0 ? "above" : "below");
+const VS = { avg5: "vs 5-yr", avg10: "vs 10-yr", ly: "vs last yr", week: "vs last wk" };
+const SHORT = {
+  cuencasinternasdecataluna: "C.I. Cataluña", cuencasinternasdelpaisvasco: "C.I. País Vasco", cuencamediterraneaandaluza: "Med. Andaluza",
+  tintoodielypiedras: "Tinto-Odiel-Piedras", cantabricooccidental: "Cantábrico Occ.", cantabricooriental: "Cantábrico Or."
+};
+const LIST_CSS = `<style>
+  .esh-layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px;align-items:start}
+  @media (max-width:980px){.esh-layout{grid-template-columns:1fr}}
+  .esh-list{padding:14px 12px 10px}
+  .esh-list h2{font-size:15px;margin:0 0 6px 6px}
+  .esh-head,.esh-row{display:grid;grid-template-columns:9px minmax(0,1fr) 50px 58px 46px;gap:8px;align-items:center}
+  .esh-head{font-size:11px;color:var(--muted);padding:4px 6px 6px;border-bottom:1px solid var(--border)}
+  .esh-head span{text-align:right}
+  .esh-rows{max-height:560px;overflow-y:auto;margin-top:4px}
+  .esh-row{width:100%;background:none;border:0;border-radius:6px;padding:5px 6px;color:inherit;font:inherit;font-size:12.5px;text-align:left;cursor:pointer}
+  .esh-row:hover{background:rgba(127,127,127,0.12)}
+  .esh-row.on{background:rgba(127,127,127,0.22)}
+  .esh-row.total{font-weight:700}
+  .esh-row .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .esh-row .n{text-align:right;font-variant-numeric:tabular-nums}
+  .esh-dot{width:9px;height:9px;border-radius:50%}
+  .esh-foot{font-size:11px;color:var(--muted);margin:8px 6px 0;line-height:1.4}
+</style>`;
+
+// A 12-week line: level over the last 12 weekly bulletins (blue rising, red falling).
+function spark(values, fmt) {
+  const vs = values.filter(v => v != null);
+  if (vs.length < 2) return "<span></span>";
+  const lo = Math.min(...vs);
+  const hi = Math.max(...vs);
+  const pts = values.map((v, i) => (v == null ? null : [mul(i, 40 / Math.max(1, values.length - 1)) + 2, 13 - mul(hi > lo ? (v - lo) / (hi - lo) : 0.5, 10)])).filter(Boolean);
+  const end = pts.at(-1);
+  const col = vs.at(-1) >= vs.at(0) ? "#5b8bc4" : "#c0675e";
+  return `<svg width="46" height="16" viewBox="0 0 46 16" role="img" style="justify-self:end"><title>Last 12 weekly bulletins: ${fmt(vs.at(0))} to ${fmt(vs.at(-1))}</title>
+    <polyline fill="none" stroke="${col}" stroke-width="1.4" stroke-linejoin="round" points="${pts.map(p => p.at(0).toFixed(1) + "," + p.at(1).toFixed(1)).join(" ")}"/>
+    <circle cx="${end.at(0).toFixed(1)}" cy="${end.at(1).toFixed(1)}" r="1.8" fill="${col}"/></svg>`;
+}
 
 export class EsHydroMap extends Base {
   constructor(root) {
@@ -22,7 +59,8 @@ export class EsHydroMap extends Base {
       ${heroHtml("Spain's hydro,", "at a glance.", "Reservoirs in every river basin from MITECO's weekly hydrological bulletin against the average of the five or ten years before, hydroelectric reserves, hydro output and inflow against normal. Slide back to any bulletin since 1988; click a basin to see its year.")}
       ${headlineBlock()}
       <div data-cards></div>
-      <div class="map-layout">
+      ${LIST_CSS}
+      <div class="esh-layout">
         <div class="map-col">
           <div class="map-controls">
             <div class="segmented" role="group" aria-label="Measure">${Object.keys(MEASURES).map(k => `<button type="button" data-measure="${k}">${MEASURES[k].label}</button>`).join("")}</div>
@@ -41,9 +79,11 @@ export class EsHydroMap extends Base {
           <div data-legend class="muted small" style="margin:4px 0 8px"></div>
           <div data-map></div>
         </div>
-        <aside class="panel reactor-list">
-          <div class="panel-head"><div><h2>Basins</h2><p data-list-sub></p></div></div>
-          <div class="reactor-rows" data-list></div>
+        <aside class="panel esh-list">
+          <h2>Basins</h2>
+          <div class="esh-head" data-list-head></div>
+          <div class="esh-rows" data-list></div>
+          <p class="esh-foot" data-list-foot></p>
         </aside>
       </div>
       <div data-detail></div>
@@ -116,7 +156,6 @@ export class EsHydroMap extends Base {
     const e = { v: ePct.get(date), a5: nAvg(ePct, 5), a10: nAvg(ePct, 10), ly: near(ePct, shiftDate(date, -1)) };
     const w = { v: wPct.get(date), a5: nAvg(wPct, 5), a10: nAvg(wPct, 10) };
     const allRow = data.byKey.get("all").get(date) || {};
-    const pp = (v, ref) => (v == null || ref == null ? "–" : signed(v - ref, x => fmtNumber(x, 1) + " pp"));
     const lastMix = [...mix.byDate.keys()].sort().filter(d => mix.byDate.get(d).hydro != null).at(-1);
     const asOf = lastMix && date >= "2015-01-08" ? (date < lastMix ? date : lastMix) : null;
     const g = asOf ? genStats(mix, asOf) : null;
@@ -124,25 +163,20 @@ export class EsHydroMap extends Base {
     const inNow = flow.get(date);
     const inNorm = meanOf(yearsBack(N).map(k => near(flow, shiftDate(date, -k))));
     const gw = v => (v == null ? "–" : fmtNumber(v / 1000, 2) + " GW");
-    const vsNorm = b => `${b.n5 ? signed(pctOf(b.v, b.n5), x => fmtNumber(x, 0) + "%") + " vs 5-yr norm" : ""}${b.n10 ? " · " + signed(pctOf(b.v, b.n10), x => fmtNumber(x, 0) + "%") + " vs 10-yr" : ""}${b.ly ? " · last year " + gw(b.ly) : ""}`;
     const twh = b => (b.v == null ? null : mul(mul(b.v, b.days), 24) / 1000000);
-    const below = view.basins.filter(b => b.d != null && b.d < 0).length;
-    const withD = view.basins.filter(b => b.d != null).length;
+    const vs510 = (v, n5, n10, f) => [n5 == null ? "" : f(v, n5) + " vs 5-yr", n10 == null ? "" : f(v, n10) + " vs 10-yr"].filter(Boolean).join(" · ");
+    const pcG = (v, ref) => signed(pctOf(v, ref), x => fmtNumber(x, 0) + "%");
+    const ppG = (v, ref) => signed(v - ref, x => fmtNumber(x, 1) + " pp");
     this.root.querySelector("[data-cards]").innerHTML = cards([
-      card("Hydroelectric reserves", e.v == null ? "–" : fmtNumber(e.v, 1) + "% full", `${fmtNumber((allRow.energy || 0) / 1000, 2)} TWh · ${pp(e.v, e.a5)} vs 5-yr avg · ${pp(e.v, e.a10)} vs 10-yr · ${pp(e.v, e.ly)} vs last year`, " accent"),
-      card("Hydro output, past 7 days", g ? gw(g.week.v) : "–", g ? vsNorm(g.week) : "REE data from 2015"),
-      card("Hydro output, month to date", g ? gw(g.month.v) : "–", g ? vsNorm(g.month) : ""),
-      card("Hydro output, year to date", g && g.year.v != null ? fmtNumber(twh(g.year), 2) + " TWh" : "–", g ? `${g.year.n5 ? signed(pctOf(g.year.v, g.year.n5), x => fmtNumber(x, 1) + "%") + " vs 5-yr norm" : ""}${g.year.n10 ? " · " + signed(pctOf(g.year.v, g.year.n10), x => fmtNumber(x, 1) + "%") + " vs 10-yr" : ""}${g.year.ly ? " · " + signed(pctOf(g.year.v, g.year.ly), x => fmtNumber(x, 1) + "%") + " on last year" : ""}` : ""),
-      card("Estimated inflow, latest week", inNow == null ? "–" : fmtNumber(inNow, 0) + " GWh", inNorm ? `${N}-yr norm ${fmtNumber(inNorm, 0)} GWh (${fmtNumber(mul(inNow ?? 0, 100) / inNorm, 0)}%)` : "Output plus change in energy stored"),
-      card(s.compare === "week" ? "Basins down on the week" : "Basins below " + AGAINST[s.compare], `${below} of ${withD}`, m.label)
+      card("Hydroelectric reserves", e.v == null ? "–" : fmtNumber(e.v, 1) + "% full", e.v == null ? "" : vs510(e.v, e.a5, e.a10, ppG), " accent"),
+      card("Hydro output, past 7 days", g ? gw(g.week.v) : "–", g && g.week.v != null ? vs510(g.week.v, g.week.n5, g.week.n10, pcG) : "REE data from 2015"),
+      card("Hydro output, month to date", g ? gw(g.month.v) : "–", g && g.month.v != null ? vs510(g.month.v, g.month.n5, g.month.n10, pcG) : ""),
+      card("Hydro output, year to date", g && g.year.v != null ? fmtNumber(twh(g.year), 2) + " TWh" : "–", g && g.year.v != null ? vs510(g.year.v, g.year.n5, g.year.n10, pcG) : ""),
+      card("Inflow, latest week", inNow == null ? "–" : fmtNumber(inNow, 0) + " GWh", inNorm && inNow != null ? `${fmtNumber(mul(inNow, 100) / inNorm, 0)}% of ${N}-yr norm` : "Estimate: output plus change in stored energy")
     ]);
     const ranked = view.basins.filter(b => b.s != null).sort((a, b) => a.s - b.s);
-    const wBasins = basinView(data, "wpct", "avg5", "diff", date).basins.filter(b => b.d != null).sort((a, b) => a.d - b.d);
-    const listOf = xs => xs.map(b => `${b.name} (${signed(b.d, x => fmtNumber(x, 1) + " pp")})`).join(" and ");
-    const parts = [`In MITECO's bulletin of ${fmtLongDate(date)}, Spain's hydroelectric reserves stood at ${fmtNumber((allRow.energy || 0) / 1000, 2)} TWh, ${fmtNumber(e.v, 1)}% full: ${e.a5 == null ? "" : fmtNumber(Math.abs(e.v - e.a5), 1) + " points " + side(e.v - e.a5) + " the 5-year average for the time of year"}${e.a10 == null ? "" : " and " + fmtNumber(Math.abs(e.v - e.a10), 1) + " points " + side(e.v - e.a10) + " the 10-year average"}.`];
-    if (w.v != null && w.a5 != null) parts.push(`Reservoirs overall were ${fmtNumber(w.v, 1)}% full, ${fmtNumber(Math.abs(w.v - w.a5), 1)} points ${side(w.v - w.a5)} the 5-year average.`);
-    if (g && g.week.v != null && g.week.n5) parts.push(`Hydro output averaged ${gw(g.week.v)} in the week to ${fmtLongDate(g.asOf)}, ${fmtNumber(Math.abs(pctOf(g.week.v, g.week.n5)), 0)}% ${side(g.week.v - g.week.n5)} the 5-year norm${g.year.v != null && g.year.n5 ? `, and ${fmtNumber(twh(g.year), 1)} TWh so far this year, ${fmtNumber(Math.abs(pctOf(g.year.v, g.year.n5)), 0)}% ${side(g.year.v - g.year.n5)} the norm` : ""}.`);
-    if (wBasins.length >= 4) parts.push(`Furthest below normal: ${listOf(wBasins.slice(0, 2))}; furthest above: ${listOf(wBasins.slice(-2).reverse())}.`);
+    const parts = [`In MITECO's bulletin of ${fmtLongDate(date)}, Spain's reservoirs were ${fmtNumber(w.v, 1)}% full and hydroelectric reserves ${fmtNumber(e.v, 1)}% (${fmtNumber((allRow.energy || 0) / 1000, 2)} TWh)${e.a5 == null ? "" : ", " + fmtNumber(Math.abs(e.v - e.a5), 1) + " points " + side(e.v - e.a5) + " the 5-year average for the time of year"}.`];
+    if (g && g.week.v != null && g.week.n5) parts.push(`Hydro output averaged ${gw(g.week.v)} in the week to ${fmtLongDate(g.asOf)}, ${fmtNumber(Math.abs(pctOf(g.week.v, g.week.n5)), 0)}% ${side(g.week.v - g.week.n5)} the 5-year norm${g.year.v != null && g.year.n5 ? `; so far this year it totals ${fmtNumber(twh(g.year), 1)} TWh, ${fmtNumber(Math.abs(pctOf(g.year.v, g.year.n5)), 0)}% ${side(g.year.v - g.year.n5)}` : ""}.`);
     this.headline.textContent = parts.join(" ");
 
     // Legend, map and list.
@@ -202,13 +236,17 @@ export class EsHydroMap extends Base {
     });
 
     const list = this.root.querySelector("[data-list]");
-    this.root.querySelector("[data-list-sub]").textContent = `${s.show === "level" ? m.label : "Against " + AGAINST[s.compare]} · lowest first · last 12 weeks`;
-    const rowHtml = (b, dot) => `<button type="button" class="reactor-row${b.key === sel ? " active" : ""}" data-basin="${b.key}">
-        <span class="dot" style="background:${dot}"></span>
-        <span class="reactor-name"><b>${b.name}</b><span>${fmtV(b.v)}</span></span>
-        ${sparkline(b.spark)}
-        <span class="reactor-when"><span>${fmtS(b.s)}</span></span></button>`;
-    list.innerHTML = rowHtml(view.spain, cssVar("--s-actual")) + [...ranked, ...view.basins.filter(b => b.s == null)].map(b => rowHtml(b, colour(b))).join("");
+    const gapOf = b => (s.show === "pct" ? b.p : b.d);
+    const gapTxt = b => (gapOf(b) == null ? "–" : signed(gapOf(b), x => fmtNumber(x, s.show === "pct" ? 0 : m.dec)));
+    const num = v => (v == null ? "–" : fmtNumber(v, m.dec));
+    const sparkFmt = v => fmtNumber(v, m.dec) + (m.unit === "%" ? "%" : " " + m.unit);
+    this.root.querySelector("[data-list-head]").innerHTML = `<i></i><span style="text-align:left">Basin</span><span>Now (${m.unit})</span><span>${VS[s.compare]} (${s.show === "pct" ? "%" : m.diff})</span><span>12 wks</span>`;
+    const rowHtml = (b, dot, extra) => `<button type="button" class="esh-row${extra}${b.key === sel ? " on" : ""}" data-basin="${b.key}" title="${b.name}">
+        <i class="esh-dot" style="background:${dot}"></i><span class="nm">${SHORT[b.key] || b.name}</span>
+        <span class="n">${num(b.v)}</span><span class="n">${gapTxt(b)}</span>${spark(b.spark, sparkFmt)}</button>`;
+    const order = [...ranked, ...view.basins.filter(b => b.s == null)];
+    list.innerHTML = rowHtml(view.spain, cssVar("--s-actual"), " total") + order.map(b => rowHtml(b, colour(b), "")).join("");
+    this.root.querySelector("[data-list-foot]").textContent = `Lowest first by ${s.show === "level" ? m.label.toLowerCase() : "the gap to " + AGAINST[s.compare]}. 12 wks: ${m.label.toLowerCase()} over the last 12 weekly bulletins to ${fmtLongDate(date)}; blue rising, red falling. Click a basin for its year.`;
     list.querySelectorAll("[data-basin]").forEach(row => {
       const name = data.names.get(row.dataset.basin);
       row.addEventListener("mouseenter", () => { if (row.dataset.basin !== "all") this.mapChart?.dispatchAction({ type: "highlight", geoIndex: 0, name }); });
