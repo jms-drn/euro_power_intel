@@ -5,12 +5,13 @@ import { card } from "./market-common.js";
 import { fmtByUnit } from "./market-data.js";
 import { TimeExplorer } from "./time-explorer.js";
 import { QUARTER, addDays, dateKey, fmtDateTime, fmtNumber, fmtPct, fmtPeriod, fmtTime, heroHtml, parisMidnight, todayParis, writeHash } from "./util.js";
-import { ENTSOE, ES_FIRST, FUELS, REE, RENEWABLE, fuelValue, getFlowsDaily, getFlowsRaw, getMixDaily, getMixRaw, pumpValue, totalGen } from "./es-data.js";
+import { ENTSOE, ES_FIRST, FUELS, REE, RENEWABLE, fuelValue, getFlowsDaily, getFlowsRaw, getMixDaily, getMixRaw, hydroGross, pumpValue, totalGen } from "./es-data.js";
 import { GW, cards, headlineBlock, meanOf, mul, pct, wireHeadline } from "./es-common.js";
 
 const VRE = ["wind", "solar_pv", "solar_thermal"];
 const FOSSIL = ["ccgt", "coal", "fuel_gas", "chp_other"];
 const shareOf = (list, set) => pct(list.reduce((s, r) => s + set.reduce((x, f) => x + (fuelValue(r, f) || 0), 0), 0), list.reduce((s, r) => s + totalGen(r), 0));
+const fuelName = f => (f === "hydro" ? "Hydro (net of pumping)" : FUELS.find(x => x.value === f).label);
 
 export class EsGenToday {
   constructor(root) {
@@ -53,34 +54,37 @@ export class EsGenToday {
         const b = meanOf(ly.map(r => fuelValue(r, f)));
         const change = a != null && b ? pct(a - b, b) : null;
         if (change != null && Math.max(a, b) >= 1000) changes.push({ f, a, b, change });
-        return card(FUELS.find(x => x.value === f).label, GW(a), b != null ? `${fmtPct(change, 0)} vs ${GW(b)} last year` : "");
+        return card(fuelName(f), GW(a), b != null ? `${fmtPct(change, 0)} vs ${GW(b)} last year` : "");
       });
       const pumpNow = meanOf(rows.map(pumpValue));
+      const grossNow = meanOf(rows.map(hydroGross));
       const ren = shareOf(rows, RENEWABLE);
       const renLy = shareOf(ly, RENEWABLE);
       const pp = (a, b) => (a != null && b != null ? `${a - b >= 0 ? "+" : "−"}${fmtNumber(Math.abs(a - b), 1)} pp vs last year` : "");
       this.root.querySelector("[data-cards]").innerHTML = cards([
         ...fuelCards,
-        card("Pumping", pumpNow != null ? GW(-pumpNow) : "–", pumpNow != null ? "Average consumption of pumped storage" : "Not published before Dec 2024"),
+        card("Pumping", pumpNow != null ? GW(-pumpNow) : "–", pumpNow != null ? `Average consumption · hydro before pumping ${GW(grossNow)}` : "Not published before Dec 2024"),
         card("Renewable share", ren != null ? fmtNumber(ren, 1) + "%" : "–", pp(ren, renLy), " accent"),
         card("Wind and solar share", fmtNumber(shareOf(rows, VRE), 1) + "%", ""),
         card("Fossil share", fmtNumber(shareOf(rows, FOSSIL), 1) + "%", "Gas, coal, fuel-gas and cogeneration")
       ]);
       changes.sort((x, y) => Math.abs(y.change) - Math.abs(x.change));
       const top = changes.at(0);
-      const name = f => FUELS.find(x => x.value === f).label.toLowerCase();
-      let text = top ? `Spanish ${name(top.f)} output averaged ${GW(top.a)} ${label} to ${fmtTime(lastT + QUARTER)}, ${fmtNumber(Math.abs(top.change), 0)}% ${top.change >= 0 ? "above" : "below"} the same hours on the same weekday last year (${GW(top.b)}).` : "";
+      let text = top ? `Spanish ${fuelName(top.f).toLowerCase()} output averaged ${GW(top.a)} ${label} to ${fmtTime(lastT + QUARTER)}, ${fmtNumber(Math.abs(top.change), 0)}% ${top.change >= 0 ? "above" : "below"} the same hours on the same weekday last year (${GW(top.b)}).` : "";
       if (ren != null) text += ` Renewables supplied ${fmtNumber(ren, 1)}% of generation${renLy != null ? `, against ${fmtNumber(renLy, 1)}% a year earlier` : ""}.`;
       this.headline.textContent = text.trim();
-      const used = FUELS.filter(f => mix.some(r => (fuelValue(r, f.value) || 0) > 0));
-      const series = used.map(f => ({ name: f.label, colour: f.colour, type: "line", stack: "mix", unit: "GW", decimals: 2, width: 0.6, areaOpacity: 0.85, symbols: false, data: mix.map(r => [r.t, (fuelValue(r, f.value) || 0) / 1000]) }));
+      // In this chart hydro is drawn before pumping, with pumping below zero,
+      // so the stack shows what plants produced and what pumps consumed.
+      const stackVal = (r, f) => (f === "hydro" ? (hydroGross(r) ?? fuelValue(r, f)) : fuelValue(r, f));
+      const used = FUELS.filter(f => mix.some(r => (stackVal(r, f.value) || 0) > 0));
+      const series = used.map(f => ({ name: f.label, colour: f.colour, type: "line", stack: "mix", unit: "GW", decimals: 2, width: 0.6, areaOpacity: 0.85, symbols: false, data: mix.map(r => [r.t, (stackVal(r, f.value) || 0) / 1000]) }));
       if (mix.some(r => pumpValue(r) != null)) series.push({ name: "Pumping", colour: "--s-ly", type: "line", stack: "pump", unit: "GW", decimals: 2, width: 0.6, areaOpacity: 0.6, symbols: false, data: mix.map(r => [r.t, (pumpValue(r) || 0) / 1000]) });
       this.panel.setTitle("Generation by technology, every 15 minutes", `${fmtPeriod(from, day)} · GW, stacked`);
       this.panel.render({
         xType: "time", xLabel: fmtDateTime, yName: "GW", source: REE, zeroLine: true,
         markAreas: [{ from: parisMidnight(today), to: parisMidnight(addDays(today, 1)), label: "Today", colour: "--today" }],
         series,
-        notes: ["Hydro is output before pumping: REE's real-time hydro figure, which is net of pumped-storage consumption, plus that consumption. Pumping is shown below zero."]
+        notes: ["In this chart hydro is output before pumping (REE's net hydro figure plus pumping consumption, from Dec 2024) and pumping is shown below zero. Cards, shares and comparisons with earlier years use REE's net hydro figure for every year."]
       });
       this.sharePanel.setTitle("Renewable and wind-and-solar shares", "% of generation, every 15 minutes");
       this.sharePanel.render({
@@ -103,6 +107,7 @@ export function esGenExplorer(root) {
   const groups = { total: FUELS.map(f => f.value), ren: RENEWABLE, vre: VRE, fossil: FOSSIL, solar: ["solar_pv", "solar_thermal"] };
   const val = (r, k) => {
     if (k === "pump") return r.pump_load == null ? null : -Math.min(0, r.pump_load);
+    if (k === "hydro_gross") return hydroGross(r);
     return groups[k] ? groups[k].reduce((a, f) => a + (fuelValue(r, f) || 0), 0) : fuelValue(r, k);
   };
   return new TimeExplorer(root, {
@@ -110,26 +115,27 @@ export function esGenExplorer(root) {
     hero: ["Explore Spanish generation,", "since 2015.", "Output by technology from REE's real-time data, at any resolution from 15 minutes to a year, against last year, the average and range of earlier years, a chosen year or another technology."],
     firstDate: ES_FIRST, source: REE, fine: "15m",
     subjects: [
-      ...FUELS.map(f => ({ value: f.value, label: f.label, colour: f.colour })),
+      ...FUELS.map(f => ({ value: f.value, label: fuelName(f.value), colour: f.colour })),
       { value: "solar", label: "Solar (PV and thermal)" }, { value: "total", label: "Total" }, { value: "ren", label: "Renewables" },
-      { value: "vre", label: "Wind + solar" }, { value: "fossil", label: "Fossil and cogeneration" }, { value: "pump", label: "Pumping consumption" }
+      { value: "vre", label: "Wind + solar" }, { value: "fossil", label: "Fossil and cogeneration" },
+      { value: "hydro_gross", label: "Hydro before pumping (from Dec 2024)" }, { value: "pump", label: "Pumping consumption (from Dec 2024)" }
     ],
     subjectLabel: "Technology", compareSubjects: true, compareLabel: "Another technology…",
     measures: {
       mean: { label: "Average output", short: "average output", unit: "GW", scale: 1000, decimals: 2, agg: "mean", daily: (r, k) => val(r, k) },
-      share: { label: "Share of generation", short: "share of generation", unit: "%", decimals: 1, agg: "mean", daily: (r, k) => (k === "pump" ? null : pct(val(r, k), totalGen(r))) },
+      share: { label: "Share of generation", short: "share of generation", unit: "%", decimals: 1, agg: "mean", daily: (r, k) => (k === "pump" || k === "hydro_gross" ? null : pct(val(r, k), totalGen(r))) },
       energy: { label: "Energy (GWh)", short: "energy", unit: "GWh", decimals: 0, agg: "sum", intraday: false, daily: (r, k) => { const v = val(r, k); return v == null ? null : mul(v, 24) / 1000; } }
     },
     defaults: { measure: "mean", subject: "wind", preset: "last30", res: "1d" },
     loadDaily: getMixDaily,
     loadRaw: async (k, from, to, measure) => (await getMixRaw(from, to)).filter(r => r.wind != null).map(r => {
       const v = val(r, k);
-      return { t: r.t, min: 15, v: measure === "share" ? (k === "pump" ? null : pct(v, totalGen(r))) : v };
+      return { t: r.t, min: 15, v: measure === "share" ? (k === "pump" || k === "hydro_gross" ? null : pct(v, totalGen(r))) : v };
     }),
     hasQuarters: () => true,
     fmt: (v, m) => fmtByUnit(v, m),
     sentenceSubject: (m, subj) => `Spanish ${subj.toLowerCase()} ${m.short}`,
-    notes: () => ["REE real-time generation for mainland Spain. Hydro is output before pumping (from Dec 2024; REE's figure net of pumping before). Daily energy uses the day's average output over 24 hours."]
+    notes: () => ["REE real-time generation for mainland Spain. Hydro is REE's real-time figure, net of pumped-storage consumption, for every year; hydro before pumping and pumping itself exist only from Dec 2024. Daily energy uses the day's average output over 24 hours."]
   });
 }
 
