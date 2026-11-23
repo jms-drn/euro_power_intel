@@ -6,7 +6,7 @@
 // Code note: no asterisks here (chat formatting strips them when pasted).
 import { MARKETS } from "./markets.js";
 
-const TOPICS = { prices: "Prices", generation: "Generation", nuclear: "Nuclear", flows: "Flows", demand: "Demand" };
+const TOPICS = { prices: "Prices", generation: "Generation", hydro: "Hydro", nuclear: "Nuclear", flows: "Flows", demand: "Demand" };
 const LEVEL = { record: "Record", month: "Month record", since: "Highest/lowest since", event: "Event" };
 const button = document.getElementById("bell");
 const panel = document.getElementById("bell-panel");
@@ -52,7 +52,7 @@ function renderPanel() {
       ${topic !== "all" ? `<button type="button" class="bell-mute" data-mute="${topic}">${off.has(topic) ? "Unmute" : "Mute"} ${TOPICS[topic]}</button>` : ""}</div>` : ""}
     ${list.length ? `<ul class="bell-list">${list.map(a => `<li><a href="#${marketOf(a)}/${pathOf(a)}" class="${seen.has(a.id) ? "" : "unseen"}"><span class="bell-level ${a.level}">${LEVEL[a.level] || ""}</span><b>${a.title}</b><span>${a.detail}</span><span class="muted">${fmtDay(a.date)} · open the data →</span></a></li>`).join("")}</ul>`
       : `<p class="muted bell-empty">Nothing notable for ${m.name} in the past four days.</p>`}
-    <p class="bell-foot muted">Records, the highest or lowest values for a while, negative prices${m.code === "FR" ? " and new unplanned nuclear outages" : ""}.</p>`;
+    <p class="bell-foot muted">Records, the highest or lowest values for a while, negative prices${m.code === "FR" ? " and new unplanned nuclear outages" : " and hydro reserves unusual for the time of year"}.</p>`;
 }
 
 export function toggleBell(open) {
