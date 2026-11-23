@@ -1,0 +1,44 @@
+name: Hydro split probe (one-off)
+# Start by hand from the Actions tab. Downloads Spain's hydro generation by
+# type from ENTSO-E for six sample days and compares it with the stored REE
+# data. Read-only for data/. Takes about a minute. Safe to re-run.
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      ENTSOE_TOKEN: ${{ secrets.ENTSOE_TOKEN }}
+      ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Run the hydro split probe
+        run: python scripts/hydro_split_probe.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hydro-split-probe
+          path: probe/out
+          retention-days: 14
+      - name: Save the report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add probe/out
+          git diff --cached --quiet && { echo "No changes"; exit 0; }
+          git commit -qm "Hydro split probe report"
+          for attempt in 1 2 3; do
+            git push origin HEAD:main && exit 0
+            sleep 15
+            git fetch origin main
+            git rebase -X theirs origin/main || { git rebase --abort; exit 1; }
+          done
+          exit 1
