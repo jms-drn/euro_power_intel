@@ -17,13 +17,12 @@ export function whatsNewHtml() {
 function spainHtml() {
   return `
     <h3>Spain</h3>
-    <p>Spanish figures cover mainland Spain (the Peninsula); the Balearic and Canary Islands, Ceuta and Melilla are left out. Demand, REE's demand forecast and the generation mix come from REE, the Spanish transmission system operator, through its ESIOS platform: REE publishes them every 5 minutes and the site averages them to quarter-hours, from 1 Jan 2015. Day-ahead prices for Spain, France and Portugal and physical flows on the French and Portuguese borders come from the ENTSO-E Transparency Platform. Reservoir levels come from MITECO's weekly hydrological bulletin. Mainland Spain and France share the same clock, so times are Central European time.</p>
+    <p>Spanish figures cover mainland Spain (the Peninsula); the Balearic and Canary Islands, Ceuta and Melilla are left out. Demand, REE's demand forecast and the generation mix come from REE, the Spanish transmission system operator, through its ESIOS platform: REE publishes them every 5 minutes and the site averages them to quarter-hours, from 1 Jan 2015. Day-ahead prices for Spain, France and Portugal, physical flows on the French and Portuguese borders and hydro generation by type come from the ENTSO-E Transparency Platform. Reservoir levels, basins, rainfall and river flows come from MITECO's weekly hydrological bulletin. Mainland Spain and France share the same clock, so times are Central European time.</p>
     <dl class="glossary">
       ${term("Demand", "REE's real-time mainland demand (Demanda real).")}
       ${term("REE forecast", "REE's demand forecast (Demanda prevista), revised through the day; the latest value for each quarter-hour is kept.")}
       ${term("Hydro", "REE's real-time hydro figure, which is net of pumped-storage consumption, for every year, so all years compare like with like. It can dip below zero when pumping exceeds hydro output; shares and capture prices count it only when positive.")}
       ${term("Hydro before pumping", "REE's net hydro figure plus pumping consumption, from 30 Dec 2024, when REE starts publishing pumping. The mix charts draw hydro this way, with pumping below zero.")}
-      ${term("Pumping", "Consumption of pumped-storage plants (from 30 Dec 2024). Pumped-storage output is REE's turbine figure for the same plants.")}
       ${term("Solar", "Solar PV plus solar thermal, from 2 Jun 2015, when REE's split starts; REE's solar total before that.")}
       ${term("Renewable share", "Wind, solar, hydro and renewable thermal as a share of total generation (pumping excluded).")}
       ${term("Net exports", "On the price and mix pages, REE's real-time international exchange balance with its sign reversed, so positive means Spain exported. On the Flows pages, measured flows with France and Portugal from ENTSO-E.")}
@@ -34,14 +33,25 @@ function spainHtml() {
     </dl>
     <h4>Hydro page</h4>
     <dl class="glossary">
-      ${term("Reservoir levels", "MITECO's weekly hydrological bulletin, every mainland reservoir over 5 hm³, since January 1988, read from MITECO's public bulletin data each Tuesday to Thursday. Hydroelectric energy stored is MITECO's own calculation of the energy the stored water could produce, in GWh (shown as TWh). Earlier years are read at the bulletin nearest the same date.")}
-      ${term("Hydro year", "1 October to 30 September, the year used for Spanish water management.")}
+      ${term("Reservoir levels", "MITECO's weekly hydrological bulletin, every mainland reservoir over 5 hm³, since January 1988, read from MITECO's public bulletin data each Tuesday to Thursday. Hydroelectric energy stored is MITECO's own calculation of the energy the stored water could produce, in GWh (shown as TWh nationally). Earlier years are read at the bulletin nearest the same date.")}
+      ${term("Average and range", "The average, lowest and highest of the five years before (or ten, if chosen) for the same week of the year. Charts run from January to December.")}
+      ${term("Hydro by type", "ENTSO-E's actual generation per production type for Spain: run-of-river, reservoir and pumped storage, and pumped-storage consumption (pumping), since 2015. Its total net of pumping matches REE's net hydro within about 2%. Spain reports pumped-storage output separately only from about 2021; before that it is included in reservoir. Total on the Type selector is REE's net hydro.")}
+      ${term("Pumping and pumped storage", "Pumping is the electricity pumped-storage plants use to lift water uphill, usually when power is cheap; pumped storage (output) is the electricity they generate releasing it. The Pumping tab uses ENTSO-E's figures; REE's separate pumped-storage output series misses part of the output, notably before 23 Jan 2025.")}
       ${term("Estimated inflow", "The site's own estimate: REE's net hydro output between two bulletins plus the change in hydroelectric energy stored. It ignores spills, evaporation and releases that do not generate.")}
-      ${term("Evening lift", "Average hydro output from 19:00 to 23:00 minus the average from 11:00 to 17:00: how far hydro has moved out of the solar hours.")}
-      ${term("Why the capture price changed", "The change against the same months last year, split into three parts that add up: the price level (change in baseload), the price shape (last year's hydro output, matched by weekday 364 days earlier, priced at this year's prices, against baseload) and when hydro ran (this year's output against last year's, both at this year's prices).")}
-      ${term("Top-quarter share", "The share of hydro output in each day's six dearest hours (a quarter of the day). 25% would mean output ignored prices.")}
-      ${term("Implied water value", "The site's own estimate, not a published figure: the median Spanish price in the hours of each month when net hydro output was in its top quarter.")}
+      ${term("Evening lift", "Average output from 19:00 to 23:00 minus the average from 11:00 to 17:00: how far hydro has moved out of the solar hours.")}
+      ${term("Why the capture price changed", "The change against the same months last year, split into three parts that add up: the price level (change in baseload), the price shape (last year's output, matched by weekday 364 days earlier, priced at this year's prices, against baseload) and when the plants ran (this year's output against last year's, both at this year's prices).")}
+      ${term("Top-quarter share", "The share of output in each day's six dearest hours (a quarter of the day). 25% would mean output ignored prices.")}
+      ${term("Implied water value", "The site's own estimate, not a published figure: the median Spanish price in the hours of each month when output was in its top quarter.")}
       ${term("Pumping spread", "The average price earned generating minus the average price paid pumping, each weighted by energy, before round-trip losses of roughly a quarter.")}
+    </dl>
+    <h4>Reserves map</h4>
+    <dl class="glossary">
+      ${term("Basins", "MITECO's 16 mainland hydrographic areas (ámbitos), with outlines from MITECO's bulletin map. Each basin's figures add up its reservoirs over 5 hm³; Spain is the sum of all basins.")}
+      ${term("Shading", "Against the average: the gap to the average of the same week in the five (or ten) years before, in percentage points for % full or in GWh or hm³. % against the average: the same gap as a share of the average. Against last year and change on the week work the same way. Red is below, blue above, grey close; Level shades by the value itself.")}
+      ${term("Reservoir dots", "Every reservoir over 5 hm³ in the latest bulletin, sized by capacity and shaded by how full it is; hydroelectric reservoirs are solid.")}
+      ${term("Biggest moves", "Reservoirs of 20 hm³ or more with the largest change in water stored since the previous bulletin.")}
+      ${term("River flows", "Weekly flow at about 120 of MITECO's gauging stations since 2001, in m³/s, against the same week in the years before. Many stations are below dams, so flows reflect reservoir releases as well as rain.")}
+      ${term("Rainfall", "Weekly rainfall at MITECO's rain gauges (AEMET stations) since 1995, averaged across gauges and added up from 1 January, nationally and by MITECO's areas.")}
     </dl>`;
 }
 
@@ -128,9 +138,9 @@ function franceHtml() {
 
 const BELL = `
     <h3 style="margin-top:22px">Notable events (the bell)</h3>
-    <p>The bell shows the events of the market on screen, with filters by topic: records, the highest or lowest value for a while (at least a week for prices, a month for demand, generation and flows), negative prices, for France new unplanned nuclear outages of 1 GW or more and return dates pushed back a week or more, and for Spain hydro reserves that are the highest or lowest for the time of year in at least five years or move unusually in a week. Events from the past four days are listed.</p>`;
+    <p>The bell shows the events of the market on screen, with filters by topic: records, the highest or lowest value for a while (at least a week for prices, a month for demand, generation and flows), negative prices, for France new unplanned nuclear outages of 1 GW or more and return dates pushed back a week or more, and for Spain hydro reserves and basins that are the fullest or emptiest for the time of year in at least five years, unusually large weekly moves, and reservoirs of 100 hm³ or more that move 10 points or more in a week. Events from the past four days are listed.</p>`;
 
 export function aboutHtml(market) {
-  const foot = `<p class="muted">Map outline: Natural Earth (public domain). Methodology, data files and code: <a href="${CONFIG.repoUrl}" target="_blank" rel="noopener">GitHub repository</a>.</p>`;
+  const foot = `<p class="muted">Map outlines: Natural Earth (public domain) and MITECO (Spanish basins). Methodology, data files and code: <a href="${CONFIG.repoUrl}" target="_blank" rel="noopener">GitHub repository</a>.</p>`;
   return (market === "es" ? spainHtml() + franceHtml() : franceHtml() + spainHtml()) + BELL + foot;
 }
