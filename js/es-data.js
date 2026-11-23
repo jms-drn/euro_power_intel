@@ -1,5 +1,5 @@
 // Spain data: loaders for the files written by scripts/es_store.py,
-// es_prices.py, es_market.py and es_alerts.py.
+// es_prices.py, es_market.py, es_hydro.py, es_reservoirs.py and es_alerts.py.
 // Code note: no asterisks here (chat formatting strips them when pasted), so
 // multiplication is written with mul().
 import { cached, fetchText, parseUtc } from "./data.js";
@@ -11,9 +11,9 @@ export const PRICE_FIRST = "2015-01-05";
 export const REE = "REE (Spanish TSO) via ESIOS";
 export const ENTSOE = "ENTSO-E Transparency Platform";
 export const BOTH = "ENTSO-E and REE";
+export const MITECO = "MITECO weekly hydrological bulletin";
 export const mul = (a, b) => a / (1 / b);
-// Kept for the current main.js; sample data has been retired now that the
-// real history is in.
+// Kept for the current main.js; sample data has been retired.
 export const usingMock = () => false;
 
 // ---------- Reading CSV files ----------
@@ -89,16 +89,19 @@ export const FUELS = [
 ];
 export const RENEWABLE = ["wind", "solar_pv", "solar_thermal", "hydro", "renewable_thermal"];
 // Output of one technology (MW, never below zero). Hydro is REE's real-time
-// hydro plus pumping consumption, i.e. output before pumping (REE's own
-// figure is net of pumping); before Dec 2024 there is no pumping series and
-// REE's figure is used. Before June 2015 there is no solar or cogeneration
-// split, so the totals stand in.
+// hydro figure, which is net of pumped-storage consumption, for every year,
+// so all years compare like with like. Before June 2015 there is no solar or
+// cogeneration split, so the totals stand in.
 export function fuelValue(r, f) {
   let v = r[f];
-  if (f === "hydro" && v != null && r.pump_load != null) v = v - r.pump_load;
   if (v == null && f === "solar_pv") v = r.solar;
   if (v == null && f === "chp_other") v = r.other;
   return v == null ? null : Math.max(0, v);
+}
+// Hydro before pumping (REE's net figure plus pumping consumption), only
+// from 30 Dec 2024, when REE starts publishing pumping; otherwise null.
+export function hydroGross(r) {
+  return r.hydro == null || r.pump_load == null ? null : Math.max(0, r.hydro - r.pump_load);
 }
 // Pumping consumption (MW, zero or negative), or null before Dec 2024.
 export function pumpValue(r) {
@@ -130,9 +133,9 @@ export const ZONES = {
 // (cap_T, gen_T, res_mean, par_FR, par_PT) by date.
 export function getPricesDaily() {
   return cached("es-daily-prices-market", async () => {
-    const [p, m] = await Promise.all([daily("prices"), daily("market")]);
-    const rows = p.rows.map(r => ({ ...(m.byDate.get(r.date) || {}), ...r }));
-    return table(rows);
+    const both = await Promise.all([daily("prices"), daily("market")]);
+    const m = both.at(1);
+    return table(both.at(0).rows.map(r => ({ ...(m.byDate.get(r.date) || {}), ...r })));
   });
 }
 // Day-ahead prices for ES, FR or PT: list of {t, eur, min}.
@@ -150,6 +153,25 @@ export function getHourly(from, to) {
       toObjects(await fetchText("data/es/hourly/" + y + ".csv", { optional: true }).catch(() => ""), "t"))));
     return parts.flat().filter(r => r.t >= lo && r.t < hi);
   });
+}
+
+// ---------- Hydro ----------
+
+// MITECO weekly bulletins: date, water_hm3, cap_hm3, hydro_water_hm3,
+// hydro_cap_hm3, energy and energy_cap (GWh), reservoirs, hydro_reservoirs.
+export function getReservoirs() {
+  return cached("es-reservoirs", async () => table(toObjects(await fetchText("data/es/reservoirs.csv", { optional: true }).catch(() => ""), "date")));
+}
+// Monthly hydro sums (see scripts/es_hydro.py), keyed "YYYY-MM".
+export function getHydroMonthly() {
+  return cached("es-hydro-monthly", async () => {
+    const rows = toObjects(await fetchText("data/es/hydro/monthly.csv", { optional: true }).catch(() => ""), "");
+    return { rows, byKey: new Map(rows.map(r => [r.year + "-" + String(r.month).padStart(2, "0"), r])) };
+  });
+}
+// Average hydro output and price by year, month and local hour.
+export function getHydroProfile() {
+  return cached("es-hydro-profile", async () => toObjects(await fetchText("data/es/hydro/profile.csv", { optional: true }).catch(() => ""), ""));
 }
 
 // ---------- Flows (Spain's point of view: export = power leaving Spain) ----------
@@ -212,9 +234,14 @@ export async function freshness(page) {
       const t = rows.length ? rows.at(-1).t : null;
       if (t) parts.push("prices to " + fmtLongDate(dateKey(t)).replace(/ \d{4}$/, ""));
     }
-    if (page === "generation" || page === "overview" || page === "prices") {
+    if (page === "generation" || page === "overview" || page === "prices" || page === "hydro") {
       const t = lastOf(await getMixRaw(addDays(today, -1), today), "wind");
       if (t) parts.push("mix to " + fmtTime(t + QUARTER));
+    }
+    if (page === "hydro") {
+      const res = await getReservoirs();
+      const last = res.rows.at(-1);
+      if (last) parts.push("reservoirs to " + fmtLongDate(last.date).replace(/ \d{4}$/, ""));
     }
     if (page === "flows") {
       const t = lastOf(await getFlowsRaw(addDays(today, -1), today), "net");
