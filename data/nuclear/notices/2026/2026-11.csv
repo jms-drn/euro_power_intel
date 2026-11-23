@@ -1368,3 +1368,8 @@ Prochain palier : PMD
 Unit is currently ramping up by steps
 Next step : PMD"
 EDF-05470_EDF_T_00343904,3,2026-11-22T23:14Z,17W100P100P0093C,BLAYAIS 2,910,UNPLANNED,FAILURE,ACTIVE,2026-11-22T14:56Z,2026-11-23T00:45Z,2026-11-22T14:56Z/2026-11-23T00:45Z/0/910,-
+EDF-05470_EDF_T_00343972,1,2026-11-23T04:12Z,17W100P100P0119K,CRUAS 4,915,UNPLANNED,FAILURE,ACTIVE,2026-11-23T04:09Z,2026-11-24T04:09Z,2026-11-23T04:09Z/2026-11-24T04:09Z/400/515,"La durée indiquée de l'indisponibilité correspond à une durée forfaitaire de 24h, évaluée sur la base du retour d'expérience sur le parc nucléaire.
+Une nouvelle version sera publiée en fonction des diagnostics et des analyses qui seront réalisés.
+--------
+The duration of the unavailability is a pre-defined 24 hours period, assessed on the basis of the nuclear fleet feedback
+A new version will be published according to diagnostic and technical instruction."
