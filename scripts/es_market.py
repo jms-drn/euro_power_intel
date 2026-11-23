@@ -12,12 +12,15 @@ Writes:
                within 0.01 EUR/MWh of the French or Portuguese price
   data/es/hourly/YYYY.csv    one row per hour (start in UTC): prices, hours
       below and at zero, demand, residual demand, output by technology,
-      pumping consumption (negative) and net exports.
+      hydro (REE's net figure), hydro before pumping, pumping consumption
+      (negative), pumped-storage generation (turb) and net exports.
 
-Technologies: solar (PV plus solar thermal; the solar total before June
-2015), wind, nuclear, hydro (REE's real-time hydro plus pumping
-consumption, i.e. before pumping, from Dec 2024; REE's figure, net of
-pumping, before) and ccgt.
+Hydro: REE's real-time hydro figure is net of pumped-storage consumption.
+It is used as published for every year, so all years compare like with like;
+capture prices and average output count it only when positive. Hydro before
+pumping (REE's figure minus pumping consumption) exists only from Dec 2024,
+when REE starts publishing pumping, and is stored separately (hydro_gross).
+Solar is PV plus solar thermal (the solar total before June 2015).
 
 build(first_year) rebuilds every year from first_year: es_update.py
 rebuilds the current year (and the previous one in early January);
@@ -37,10 +40,12 @@ QUARTER = timedelta(minutes=15)
 ZONES = ("ES", "FR", "PT")
 TECHS = ("solar", "wind", "nuclear", "hydro", "ccgt")
 MIX_COLS = ("hydro", "nuclear", "wind", "solar", "solar_pv", "solar_thermal", "ccgt", "coal",
-            "chp_other", "other", "renewable_thermal", "pump_load", "exchanges")
+            "chp_other", "other", "renewable_thermal", "pump_load", "pump_gen", "exchanges")
 HOURLY_FIELDS = ["t", "es", "fr", "pt", "es_neg", "es_zero", "fr_neg", "fr_zero", "pt_neg", "pt_zero",
-                 "demand", "residual", "nuclear", "wind", "solar", "hydro", "ccgt", "coal", "chp",
-                 "ren_th", "pump", "net_exp"]
+                 "demand", "residual", "nuclear", "wind", "solar", "hydro", "hydro_gross", "ccgt", "coal", "chp",
+                 "ren_th", "pump", "turb", "net_exp"]
+HOURLY_VALUES = ("demand", "residual", "nuclear", "wind", "solar", "hydro", "hydro_gross", "ccgt", "coal", "chp",
+                 "ren_th", "pump", "turb", "net_exp")
 DAILY_FIELDS = (["date"] + ["cap_" + t for t in TECHS] + ["gen_" + t for t in TECHS]
                 + ["res_mean", "res_min", "res_max", "par_FR", "par_PT"])
 
@@ -59,13 +64,13 @@ def tech_values(r):
     """Output by technology (MW) from one stored mix row."""
     solar = r["solar_pv"] + (r["solar_thermal"] or 0) if r["solar_pv"] is not None else r["solar"]
     hydro = r["hydro"]
-    if hydro is not None and r["pump_load"] is not None:
-        hydro = hydro - r["pump_load"]
+    gross = hydro - r["pump_load"] if hydro is not None and r["pump_load"] is not None else None
     chp = r["chp_other"] if r["chp_other"] is not None else r["other"]
     return {
-        "solar": solar, "wind": r["wind"], "nuclear": r["nuclear"], "hydro": hydro, "ccgt": r["ccgt"],
-        "coal": r["coal"], "chp": chp, "ren_th": r["renewable_thermal"],
-        "pump": r["pump_load"], "net_exp": None if r["exchanges"] is None else -r["exchanges"],
+        "solar": solar, "wind": r["wind"], "nuclear": r["nuclear"], "hydro": hydro, "hydro_gross": gross,
+        "ccgt": r["ccgt"], "coal": r["coal"], "chp": chp, "ren_th": r["renewable_thermal"],
+        "pump": r["pump_load"], "turb": r["pump_gen"],
+        "net_exp": None if r["exchanges"] is None else -r["exchanges"],
     }
 
 
@@ -84,13 +89,15 @@ def load(year):
                 for k in range(max(1, int(row.get("min") or 60) // 15)):
                     tk = t + mul(QUARTER, k)
                     if start <= tk < end:
-                        q[tk][z] = p
+                        slot = q[tk]
+                        slot[z] = p
     for path in files_of(DEMAND_DIR, year):
         for row in read_rows(path):
             t = parse_ts(row["start_utc"])
             v = num(row.get("actual"))
             if v is not None and start <= t < end:
-                q[t]["demand"] = v
+                slot = q[t]
+                slot["demand"] = v
     for path in files_of(MIX_DIR, year):
         for row in read_rows(path):
             t = parse_ts(row["start_utc"])
@@ -98,7 +105,8 @@ def load(year):
                 continue
             r = {c: num(row.get(c)) for c in MIX_COLS}
             if r["wind"] is not None:
-                q[t]["mix"] = tech_values(r)
+                slot = q[t]
+                slot["mix"] = tech_values(r)
     return q
 
 
@@ -142,6 +150,8 @@ def build_year(year):
                 v = mix[tech]
                 if v is None:
                     continue
+                if tech == "hydro":
+                    v = max(0.0, v)
                 add(d, "gen_" + tech, v)
                 if es is not None and v > 0:
                     d["cap_" + tech] += mul(es, v)
@@ -170,7 +180,7 @@ def build_year(year):
             if a.get(z + "#"):
                 row[z + "_neg"] = round(a.get(z + "_neg", 0), 2)
                 row[z + "_zero"] = round(a.get(z + "_zero", 0), 2)
-        for k in ("demand", "residual", "nuclear", "wind", "solar", "hydro", "ccgt", "coal", "chp", "ren_th", "pump", "net_exp"):
+        for k in HOURLY_VALUES:
             row[k] = mean(a, k, 0)
         rows.append(row)
     if rows:
@@ -206,7 +216,7 @@ def build(first_year):
     for year in range(first_year, last + 1):
         new_rows.extend(build_year(year))
     path = DAILY_DIR / "market.csv"
-    keep = [r for r in read_rows(path) if int(r["date"][:4]) < first_year] if path.exists() else []
+    keep = [r for r in read_rows(path) if int(r.get("date")[0:4]) < first_year] if path.exists() else []
     write_rows(path, DAILY_FIELDS, keep + new_rows)
     print("Spain market summaries rebuilt from " + str(first_year) + ": " + str(len(new_rows)) + " days")
     return len(new_rows)
