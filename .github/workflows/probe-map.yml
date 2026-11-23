@@ -1,0 +1,34 @@
+name: Map probe (one-off)
+# Start by hand from the Actions tab. Checks MITECO's bulletin map, rainfall
+# and river-flow data. Read-only for data/. Takes about a minute.
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Run the map probe
+        run: python scripts/map_probe.py
+      - name: Save the report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add probe/out
+          git diff --cached --quiet && { echo "No changes"; exit 0; }
+          git commit -qm "Map probe report"
+          for attempt in 1 2 3; do
+            git push origin HEAD:main && exit 0
+            sleep 15
+            git fetch origin main
+            git rebase -X theirs origin/main || { git rebase --abort; exit 1; }
+          done
+          exit 1
