@@ -1,10 +1,10 @@
 name: Spain reservoirs (MITECO bulletin)
-# Downloads Spain's weekly reservoir levels from MITECO's public bulletin data
-# into data/es/reservoirs.csv. Runs on Tuesdays to Thursdays three times a day,
-# which catches each new bulletin within hours; runs that find nothing new
-# save nothing. Start it by hand with a first year (e.g. 1988) to download the
-# full history. Shares the rte-data queue, so it never clashes with the
-# 15-minute update.
+# Downloads Spain's weekly reservoir levels (national, by basin and by
+# reservoir), rainfall and river flows from MITECO's public bulletin data.
+# Runs on Tuesdays to Thursdays three times a day, which catches each new
+# bulletin within hours; runs that find nothing new save nothing. Start it
+# by hand with a first year (e.g. 1988) to download the history from then.
+# Shares the rte-data queue, so it never clashes with the 15-minute update.
 on:
   schedule:
     - cron: "20 8,14,20 1-31 1-12 2-4"
@@ -22,9 +22,10 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     env:
       FIRST_YEAR: ${{ inputs.first_year }}
+      PYTHONUNBUFFERED: "1"
     steps:
       - uses: actions/checkout@v5
         with:
@@ -32,15 +33,21 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-      - name: Fetch reservoir levels
+      - name: Fetch reservoir levels, basins, rainfall and river flows
         run: |
-          if [ -n "$FIRST_YEAR" ]; then python scripts/es_reservoirs.py --from "$FIRST_YEAR"; else python scripts/es_reservoirs.py; fi
+          if [ -n "$FIRST_YEAR" ]; then
+            python scripts/es_reservoirs.py --from "$FIRST_YEAR"
+            python scripts/es_basins.py --from "$FIRST_YEAR" || echo "::warning::Basin download failed; national levels are still saved"
+          else
+            python scripts/es_reservoirs.py
+            python scripts/es_basins.py || echo "::warning::Basin download failed; national levels are still saved"
+          fi
       - name: Save
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           commit_data() {
-            git add data/es/reservoirs.csv
+            git add data/es
             if git diff --cached --quiet; then
               echo "No new bulletin"
               return 1
@@ -54,7 +61,7 @@ jobs:
             sleep 20
             git fetch origin main
             git reset --hard origin/main
-            if [ -n "$FIRST_YEAR" ]; then python scripts/es_reservoirs.py --from "$FIRST_YEAR"; else python scripts/es_reservoirs.py; fi
+            if [ -n "$FIRST_YEAR" ]; then python scripts/es_reservoirs.py --from "$FIRST_YEAR"; python scripts/es_basins.py --from "$FIRST_YEAR"; else python scripts/es_reservoirs.py; python scripts/es_basins.py; fi
             commit_data || exit 0
           done
           echo "Could not save the data after 3 attempts"
