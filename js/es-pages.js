@@ -8,3 +8,4 @@ export { EsCapture, EsResidual } from "./es-capture.js";
 export { EsHydroYear } from "./es-hydro.js";
 export { EsHydroProfile } from "./es-hydro-profile.js";
 export { EsHydroValue, EsHydroPumping } from "./es-hydro-value.js";
+export { EsHydroMapFull } from "./es-hydro-extras.js";
