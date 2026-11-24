@@ -44,14 +44,17 @@ function spainHtml() {
       ${term("Implied water value", "The site's own estimate, not a published figure: the median Spanish price in the hours of each month when output was in its top quarter.")}
       ${term("Pumping spread", "The average price earned generating minus the average price paid pumping, each weighted by energy, before round-trip losses of roughly a quarter.")}
     </dl>
-    <h4>Reserves map</h4>
+    <h4>Hydro Overview</h4>
     <dl class="glossary">
       ${term("Basins", "MITECO's 16 mainland hydrographic areas (ámbitos), with outlines from MITECO's bulletin map. Each basin's figures add up its reservoirs over 5 hm³; Spain is the sum of all basins.")}
-      ${term("Shading", "Against the average: the gap to the average of the same week in the five (or ten) years before, in percentage points for % full or in GWh or hm³. % against the average: the same gap as a share of the average. Against last year and change on the week work the same way. Red is below, blue above, grey close; Level shades by the value itself.")}
-      ${term("Reservoir dots", "Every reservoir over 5 hm³ in the latest bulletin, sized by capacity and shaded by how full it is; hydroelectric reservoirs are solid.")}
+      ${term("Measures", "Water % full (water stored against capacity), hydroelectric energy % full (energy stored against the most the hydroelectric reservoirs can hold), energy in GWh and water in hm³.")}
+      ${term("Shading", "Compare with the 5- or 10-year average for the same week, last year or last week, shown as a difference (percentage points for the % full measures, GWh or hm³ otherwise), a % difference, or the level itself. Red is below, blue above, grey close. Each side of the scale is scaled separately and capped at its second-largest value, so a single extreme basin cannot wash out the rest; ≤ or ≥ on the legend marks a capped end.")}
+      ${term("Cards", "Hydroelectric reserves against the 5- and 10-year averages; REE's net hydro output over the past 7 days, the month to date and the year to date against the same days in the 5 and 10 years before; and estimated inflow for the latest week against its norm.")}
+      ${term("Date slider", "Any weekly bulletin since January 1988. The cards, summary, map, basin list and the charts below follow it. Individual reservoirs (dots, tables, biggest moves) are only available for the latest bulletin. Hydro output starts in 2015, river flows in 2001 and rainfall in 1995.")}
+      ${term("12-week lines", "The chosen measure over the last 12 weekly bulletins up to the date shown; blue if it rose over the period, red if it fell.")}
       ${term("Biggest moves", "Reservoirs of 20 hm³ or more with the largest change in water stored since the previous bulletin.")}
       ${term("River flows", "Weekly flow at about 120 of MITECO's gauging stations since 2001, in m³/s, against the same week in the years before. Many stations are below dams, so flows reflect reservoir releases as well as rain.")}
-      ${term("Rainfall", "Weekly rainfall at MITECO's rain gauges (AEMET stations) since 1995, averaged across gauges and added up from 1 January, nationally and by MITECO's areas.")}
+      ${term("Rainfall", "Weekly rainfall at MITECO's rain gauges (AEMET stations) since 1995, averaged across gauges: so far this year (added up from 1 January) or week by week against the seasonal norm, the average of the same week in the years before.")}
     </dl>`;
 }
 
@@ -136,11 +139,20 @@ function franceHtml() {
     <p>Physical (measured) flows on each French border from the ENTSO-E Transparency Platform, latest available: Belgium, Germany, Switzerland, Italy (North), Spain and Great Britain. Net exports are exports minus imports. Physical flows include loop flows and can differ from the commercial exchanges agreed in the markets.</p>`;
 }
 
-const BELL = `
+const SHARED = `
     <h3 style="margin-top:22px">Notable events (the bell)</h3>
-    <p>The bell shows the events of the market on screen, with filters by topic: records, the highest or lowest value for a while (at least a week for prices, a month for demand, generation and flows), negative prices, for France new unplanned nuclear outages of 1 GW or more and return dates pushed back a week or more, and for Spain hydro reserves and basins that are the fullest or emptiest for the time of year in at least five years, unusually large weekly moves, and reservoirs of 100 hm³ or more that move 10 points or more in a week. Events from the past four days are listed.</p>`;
+    <p>The bell shows the events of the market on screen, with filters by topic: records, the highest or lowest value for a while (at least a week for prices, a month for demand, generation and flows), negative prices, for France new unplanned nuclear outages of 1 GW or more and return dates pushed back a week or more, and for Spain hydro reserves and basins that are the fullest or emptiest for the time of year in at least five years, unusually large weekly moves, and reservoirs of 100 hm³ or more that move 10 points or more in a week. Events from the past four days are listed.</p>
+    <h3 style="margin-top:22px">Using the site</h3>
+    <dl class="glossary">
+      ${term("Quick search", "Ctrl+K (Cmd+K on a Mac), the / key or Search in the header: type part of a page, tab or Spanish basin name, then Enter.")}
+      ${term("Keyboard", "1 to 9 switch tabs. ← and → step the date slider on the Spain Hydro Overview.")}
+      ${term("Copy link", "In the page bar: copies an address that opens exactly the view on screen, with its settings. The address bar always holds the same link.")}
+      ${term("Folding panels", "The − button on a panel folds it away and + brings it back; the site remembers your choice in this browser.")}
+      ${term("Updated dots", "A dot beside Prices or Hydro in the Spain sidebar means new day-ahead prices or a new reservoir bulletin since you last opened that page.")}
+      ${term("Motion", "Pages fade in and charts ease into place. If your computer or phone is set to reduce motion, the site does too.")}
+    </dl>`;
 
 export function aboutHtml(market) {
   const foot = `<p class="muted">Map outlines: Natural Earth (public domain) and MITECO (Spanish basins). Methodology, data files and code: <a href="${CONFIG.repoUrl}" target="_blank" rel="noopener">GitHub repository</a>.</p>`;
-  return (market === "es" ? spainHtml() + franceHtml() : franceHtml() + spainHtml()) + BELL + foot;
+  return (market === "es" ? spainHtml() + franceHtml() : franceHtml() + spainHtml()) + SHARED + foot;
 }
