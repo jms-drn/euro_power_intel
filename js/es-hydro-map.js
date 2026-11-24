@@ -11,24 +11,25 @@ import { Base, cards, headlineBlock, meanOf, mul, selectHtml, signed } from "./e
 import { near, shiftDate, yearsBack } from "./es-hydro.js";
 import { AGAINST, COMPARE, MEASURES, basinView, fillColour, genStats, getBasins, getReservoirPoints, inflowSeries, loadBasinMap, pickDate, scaleFor, showOptions, useLabel, valuesOf } from "./es-hydro-map-data.js";
 
-const SPAIN = [[-9.6, 43.95], [3.45, 35.95]];
+const SPAIN = [[-9.45, 43.85], [3.4, 35.95]];
 const pctOf = (v, ref) => (v == null || !ref ? null : mul(v - ref, 100) / ref);
 const side = v => (v >= 0 ? "above" : "below");
 const VS = { avg5: "vs 5-yr", avg10: "vs 10-yr", ly: "vs last yr", week: "vs last wk" };
+// Only names too long for the widened list are shortened (full name on hover).
 const SHORT = {
-  cuencasinternasdecataluna: "C.I. Cataluña", cuencasinternasdelpaisvasco: "C.I. País Vasco", cuencamediterraneaandaluza: "Med. Andaluza",
-  tintoodielypiedras: "Tinto-Odiel-Piedras", cantabricooccidental: "Cantábrico Occ.", cantabricooriental: "Cantábrico Or."
+  cuencasinternasdelpaisvasco: "C.I. del País Vasco", cuencamediterraneaandaluza: "Mediterránea Andaluza"
 };
 const LIST_CSS = `<style>
-  .esh-layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px;align-items:start}
-  @media (max-width:980px){.esh-layout{grid-template-columns:1fr}}
+  .esh-layout{display:grid;grid-template-columns:minmax(0,1fr) 384px;gap:14px;align-items:start}
+  @media (max-width:1080px){.esh-layout{grid-template-columns:1fr}}
+  .esh-layout .map-col .panel{padding-left:10px;padding-right:10px}
   .esh-list{padding:14px 12px 10px}
   .esh-list h2{font-size:15px;margin:0 0 6px 6px}
   .esh-head,.esh-row{display:grid;grid-template-columns:9px minmax(0,1fr) 50px 58px 46px;gap:8px;align-items:center}
   .esh-head{font-size:11px;color:var(--muted);padding:4px 6px 6px;border-bottom:1px solid var(--border)}
   .esh-head span{text-align:right}
   .esh-rows{max-height:560px;overflow-y:auto;margin-top:4px}
-  .esh-row{width:100%;background:none;border:0;border-radius:6px;padding:5px 6px;color:inherit;font:inherit;font-size:12.5px;text-align:left;cursor:pointer}
+  .esh-row{width:100%;background:none;border:0;border-radius:6px;padding:5px 6px;color:inherit;font:inherit;font-size:12.5px;text-align:left;cursor:pointer;transition:background-color .15s ease}
   .esh-row:hover{background:rgba(127,127,127,0.12)}
   .esh-row.on{background:rgba(127,127,127,0.22)}
   .esh-row.total{font-weight:700}
@@ -36,6 +37,8 @@ const LIST_CSS = `<style>
   .esh-row .n{text-align:right;font-variant-numeric:tabular-nums}
   .esh-dot{width:9px;height:9px;border-radius:50%}
   .esh-foot{font-size:11px;color:var(--muted);margin:8px 6px 0;line-height:1.4}
+  .esh-slider{display:flex;align-items:center;gap:8px;margin:8px 0 2px}
+  @media (max-width:640px){.esh-slider{flex-wrap:wrap}.esh-slider input{order:-1;flex-basis:100%;height:28px}}
 </style>`;
 
 // A 12-week line: level over the last 12 weekly bulletins (blue rising, red falling).
@@ -68,11 +71,11 @@ export class EsHydroMap extends Base {
             ${selectHtml("show", "Show as", showOptions(MEASURES.wpct))}
             ${selectHtml("res", "Reservoirs", [["hydro", "Hydroelectric"], ["all", "All"], ["none", "Hide"]])}
           </div>
-          <div style="display:flex;align-items:center;gap:8px;margin:8px 0 2px">
+          <div class="esh-slider">
             <button class="btn ghost small" type="button" data-step="-52" title="A year earlier">−1y</button>
-            <button class="btn ghost small" type="button" data-step="-1" title="Previous bulletin">◀</button>
+            <button class="btn ghost small" type="button" data-step="-1" title="Previous bulletin (← key)">◀</button>
             <input type="range" data-slider min="0" max="0" value="0" style="flex:1" aria-label="Bulletin date">
-            <button class="btn ghost small" type="button" data-step="1" title="Next bulletin">▶</button>
+            <button class="btn ghost small" type="button" data-step="1" title="Next bulletin (→ key)">▶</button>
             <button class="btn ghost small" type="button" data-step="9999" title="Latest bulletin">Latest</button>
             <span data-slider-label class="muted small" style="min-width:92px;text-align:right"></span>
           </div>
@@ -200,11 +203,12 @@ export class EsHydroMap extends Base {
     const tip = p => (p.componentType === "geo" ? (byName.get(p.name) ? tipBasin(byName.get(p.name)) : p.name) : p.seriesName === "reservoirs" ? tipRes(shown.at(p.dataIndex)) : "");
     const selName = data.names.get(sel);
     const option = (t, { forExport }) => ({
-      backgroundColor: "transparent", animation: false,
+      backgroundColor: "transparent", animation: !forExport, animationDurationUpdate: 350, animationEasingUpdate: "cubicOut",
       tooltip: forExport ? undefined : { trigger: "item", confine: true, backgroundColor: t.tooltip, borderColor: t.border, padding: [9, 12], textStyle: { color: t.text, fontSize: 12 }, formatter: tip },
       geo: {
         map: "es-basins", roam: !forExport, scaleLimit: { min: 1, max: 8 }, boundingCoords: SPAIN,
-        top: forExport ? 100 : 10, bottom: forExport ? 60 : 10, label: { show: false }, selectedMode: false,
+        top: forExport ? 100 : 2, bottom: forExport ? 60 : 2, left: forExport ? undefined : 2, right: forExport ? undefined : 2,
+        label: { show: false }, selectedMode: false,
         tooltip: { show: !forExport, formatter: tip },
         itemStyle: { areaColor: cssVar("--map-other"), borderColor: t.panel, borderWidth: 1 },
         emphasis: { label: { show: false }, itemStyle: { borderColor: t.text, borderWidth: 2 } },
