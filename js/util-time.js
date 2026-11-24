@@ -148,9 +148,13 @@ export function fmtFromTo(from, to) {
   const first = from.slice(0, 4) === to.slice(0, 4) ? fmtShortDate(from) : fmtLongDate(from);
   return `from ${first} to ${fmtLongDate(to)}`;
 }
+// Numbers everywhere on the site: thousands separators, fixed decimals, a
+// true minus sign (−, not a hyphen) and no "−0.0" for values that round to 0.
 export function fmtNumber(value, decimals = 1) {
   if (value == null || !Number.isFinite(value)) return "–";
-  return value.toLocaleString("en-GB", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  const text = Math.abs(value).toLocaleString("en-GB", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  const isZero = Number(text.replace(/,/g, "")) === 0;
+  return (value < 0 && !isZero ? "−" : "") + text;
 }
 export function fmtGW(mw, decimals = 1) {
   return mw == null || !Number.isFinite(mw) ? "–" : `${fmtNumber(mw / 1000, decimals)} GW`;
