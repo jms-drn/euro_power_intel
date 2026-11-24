@@ -101830,26 +101830,26 @@ date,station_id,station,zone,mm
 2026-11-10,9,Pamplona,Ebro,0
 2026-11-17,1,Santander,Cantábrico,21.7
 2026-11-17,10,Girona (A),Cuencas Internas de Cataluña,19.4
-2026-11-17,11,Vigo (A),Galicia Costa,199.1
-2026-11-17,12,León (A),Duero,85
+2026-11-17,11,Vigo (A),Galicia Costa,198.3
+2026-11-17,12,León (A),Duero,85.2
 2026-11-17,13,Burgos (A),Duero,72
 2026-11-17,14,Logroño,Ebro,31.7
 2026-11-17,15,Huesca (A),Ebro,47.2
-2026-11-17,16,Ponferrada,Miño - Sil,99.6
+2026-11-17,16,Ponferrada,Miño - Sil,99.8
 2026-11-17,17,Soria,Duero,75.2
 2026-11-17,18,Lleida,Ebro,27.8
 2026-11-17,19,Barcelona (A),Cuencas Internas de Cataluña,32.1
-2026-11-17,2,San Sebastián - Donostia,Cuencas Internas del País Vasco,68.9
+2026-11-17,2,San Sebastián - Donostia,Cuencas Internas del País Vasco,69
 2026-11-17,20,Zamora,Duero,97
-2026-11-17,21,Valladolid,Duero,87.2
+2026-11-17,21,Valladolid,Duero,87.5
 2026-11-17,22,Zaragoza (A),Ebro,24
 2026-11-17,23,Reus (A),Cuencas Internas de Cataluña,0.8
 2026-11-17,24,Segovia,Duero,63.2
 2026-11-17,26,Salamanca (A),Duero,61.6
-2026-11-17,27,Molina de Aragón,Tajo,23
+2026-11-17,27,Molina de Aragón,Tajo,22.8
 2026-11-17,28,Ávila,Duero,37.2
 2026-11-17,29,Navacerrada,Tajo,159.4
-2026-11-17,3,A Coruña,Galicia Costa,34
+2026-11-17,3,A Coruña,Galicia Costa,32.4
 2026-11-17,30,Tortosa,Ebro,35.8
 2026-11-17,31,Guadalajara,Tajo,39.2
 2026-11-17,32,Teruel,Júcar,14.2
@@ -101868,7 +101868,7 @@ date,station_id,station,zone,mm
 2026-11-17,46,Badajoz (A),Guadiana,78.8
 2026-11-17,49,Jaén,Guadalquivir,36.4
 2026-11-17,5,Bilbao (A) - Bilbo (A),Cuencas Internas del País Vasco,49.4
-2026-11-17,50,Córdoba (A),Guadalquivir,93.9
+2026-11-17,50,Córdoba (A),Guadalquivir,64.6
 2026-11-17,52,Granada (A),Guadalquivir,18.1
 2026-11-17,53,Sevilla (A),Guadalquivir,80.3
 2026-11-17,54,Huelva,Cuenca Atlántica Andaluza,50
@@ -101883,7 +101883,7 @@ date,station_id,station,zone,mm
 2026-11-17,63,Fuerteventura (A),Islas Canarias,3.3
 2026-11-17,64,Lanzarote (A),Islas Canarias,2.9
 2026-11-17,65,Ourense,Miño - Sil,111.4
-2026-11-17,7,Santiago de Compostela,Galicia Costa,111
+2026-11-17,7,Santiago de Compostela,Galicia Costa,106
 2026-11-17,71,Cádiz Obs.,Cuenca Atlántica Andaluza,44.8
 2026-11-17,72,Ceuta,Ceuta,32.2
 2026-11-17,74,Daroca I,Ebro,13
@@ -101891,5 +101891,70 @@ date,station_id,station,zone,mm
 2026-11-17,76,Madrid Retiro,Tajo,76.9
 2026-11-17,77,Morón de la Frontera,Cuenca Atlántica Andaluza,44.5
 2026-11-17,78,Pontevedra,Galicia Costa,157
-2026-11-17,8,Vitoria - Gasteiz (A),Ebro,30.9
-2026-11-17,9,Pamplona,Ebro,26.8
+2026-11-17,8,Vitoria - Gasteiz (A),Ebro,31
+2026-11-17,9,Pamplona,Ebro,27.7
+2026-11-24,1,Santander,Cantábrico,16
+2026-11-24,10,Girona (A),Cuencas Internas de Cataluña,0.3
+2026-11-24,11,Vigo (A),Galicia Costa,167.9
+2026-11-24,12,León (A),Duero,40.4
+2026-11-24,13,Burgos (A),Duero,28
+2026-11-24,14,Logroño,Ebro,9.3
+2026-11-24,15,Huesca (A),Ebro,15
+2026-11-24,16,Ponferrada,Miño - Sil,47.4
+2026-11-24,17,Soria,Duero,41
+2026-11-24,18,Lleida,Ebro,4.6
+2026-11-24,19,Barcelona (A),Cuencas Internas de Cataluña,0.8
+2026-11-24,2,San Sebastián - Donostia,Cuencas Internas del País Vasco,38.2
+2026-11-24,20,Zamora,Duero,22.6
+2026-11-24,21,Valladolid,Duero,27.9
+2026-11-24,22,Zaragoza (A),Ebro,5.6
+2026-11-24,23,Reus (A),Cuencas Internas de Cataluña,0
+2026-11-24,24,Segovia,Duero,29.8
+2026-11-24,26,Salamanca (A),Duero,31.4
+2026-11-24,27,Molina de Aragón,Tajo,21
+2026-11-24,28,Ávila,Duero,25.6
+2026-11-24,29,Navacerrada,Tajo,54.2
+2026-11-24,3,A Coruña,Galicia Costa,70.4
+2026-11-24,30,Tortosa,Ebro,4.4
+2026-11-24,31,Guadalajara,Tajo,31.8
+2026-11-24,32,Teruel,Júcar,0.8
+2026-11-24,33,Madrid (A),Tajo,15.7
+2026-11-24,34,Castellón,Júcar,0
+2026-11-24,35,Cuenca,Júcar,17.6
+2026-11-24,37,Toledo,Tajo,5.6
+2026-11-24,38,Valencia,Júcar,0
+2026-11-24,39,Cáceres,Tajo,34
+2026-11-24,4,Lugo,Miño - Sil,56.8
+2026-11-24,40,Albacete (A),Júcar,5.2
+2026-11-24,42,Ciudad Real,Guadiana,15.6
+2026-11-24,43,Alicante (A),Júcar,0
+2026-11-24,44,Murcia,Segura,0
+2026-11-24,45,Melilla,Melilla,0
+2026-11-24,46,Badajoz (A),Guadiana,32.4
+2026-11-24,49,Jaén,Guadalquivir,14.2
+2026-11-24,5,Bilbao (A) - Bilbo (A),Cuencas Internas del País Vasco,15.6
+2026-11-24,50,Córdoba (A),Guadalquivir,9.3
+2026-11-24,52,Granada (A),Guadalquivir,3.5
+2026-11-24,53,Sevilla (A),Guadalquivir,7.5
+2026-11-24,54,Huelva,Cuenca Atlántica Andaluza,6.2
+2026-11-24,55,Jerez de la Frontera (A),Cuenca Atlántica Andaluza,14.6
+2026-11-24,56,Málaga (A),Cuenca Mediterránea Andaluza,0
+2026-11-24,58,Almería (A),Cuenca Mediterránea Andaluza,0
+2026-11-24,59,Palma de Mallorca,Islas Baleares,0
+2026-11-24,6,Oviedo,Cantábrico,8.2
+2026-11-24,60,Mahón (A),Islas Baleares,0
+2026-11-24,61,Santa Cruz de Tenerife,Islas Canarias,0
+2026-11-24,62,Las Palmas de Gran Canaria (A),Islas Canarias,0.2
+2026-11-24,63,Fuerteventura (A),Islas Canarias,4.9
+2026-11-24,64,Lanzarote (A),Islas Canarias,1.2
+2026-11-24,65,Ourense,Miño - Sil,22.8
+2026-11-24,7,Santiago de Compostela,Galicia Costa,131.2
+2026-11-24,71,Cádiz Obs.,Cuenca Atlántica Andaluza,8.7
+2026-11-24,72,Ceuta,Ceuta,5.7
+2026-11-24,74,Daroca I,Ebro,12.8
+2026-11-24,75,Gijón,Cantábrico,19.3
+2026-11-24,76,Madrid Retiro,Tajo,13.1
+2026-11-24,77,Morón de la Frontera,Cuenca Atlántica Andaluza,9.1
+2026-11-24,78,Pontevedra,Galicia Costa,128.6
+2026-11-24,8,Vitoria - Gasteiz (A),Ebro,15.3
+2026-11-24,9,Pamplona,Ebro,10.6
