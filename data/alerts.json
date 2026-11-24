@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-11-24T22:46Z",
+ "generated_utc": "2026-11-24T23:01Z",
  "alerts": [
   {
    "id": "fr_base-high-since-2026-11-25",
@@ -10,12 +10,12 @@
    "link": "prices/explorer?subject=FR&measure=base"
   },
   {
-   "id": "hydro-high-since-2026-11-23",
-   "date": "2026-11-23",
+   "id": "demand-high-since-2026-11-24",
+   "date": "2026-11-24",
    "level": "since",
-   "title": "Highest hydro output (daily average) since 18 May 2026",
-   "detail": "8.6 GW on 23 Nov 2026.",
-   "link": "generation/explorer?subject=hydro"
+   "title": "Highest demand (daily average) since 19 Feb 2026",
+   "detail": "62.1 GW on 24 Nov 2026.",
+   "link": "demand/explorer"
   }
  ]
 }

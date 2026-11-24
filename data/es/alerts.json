@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-11-24T22:47Z",
+ "generated_utc": "2026-11-24T23:06Z",
  "alerts": [
   {
    "id": "es-base-hi-2026-11-24",
@@ -8,6 +8,14 @@
    "title": "Spanish baseload 210.13 €/MWh",
    "detail": "24 Nov 2026: highest since 11 Nov 2026.",
    "link": "es/prices/explorer"
+  },
+  {
+   "id": "es-peak-hi-2026-11-24",
+   "date": "2026-11-24",
+   "level": "since",
+   "title": "Spanish demand peak 36.3 GW",
+   "detail": "24 Nov 2026: highest since 25 Sep 2026.",
+   "link": "es/demand/explorer"
   },
   {
    "id": "es-basin-cantabricooccidental-lo-2026-11-24",
