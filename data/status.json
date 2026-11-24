@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-11-24T00:17Z",
+ "generated_utc": "2026-11-24T00:35Z",
  "series": {
   "realised": {
    "months": [
@@ -173,7 +173,7 @@
     "2026-11"
    ],
    "first_utc": "2012-12-16T23:00Z",
-   "last_utc": "2026-11-23T23:45Z"
+   "last_utc": "2026-11-24T00:00Z"
   },
   "d1": {
    "months": [
@@ -521,7 +521,7 @@
     "2026-11"
    ],
    "first_utc": "2012-12-16T23:00Z",
-   "last_utc": "2026-11-25T22:30Z"
+   "last_utc": "2026-11-26T22:30Z"
   },
   "weekly": {
    "months": [
@@ -699,15 +699,15 @@
    "last_utc": "2026-12-03T22:30Z"
   }
  },
- "last_live_update_utc": "2026-11-24T00:16Z",
+ "last_live_update_utc": "2026-11-24T00:35Z",
  "last_backfill_utc": "2026-10-26T15:47Z",
  "last_errors": [],
  "power": {
-  "updated_utc": "2026-11-24T00:16Z",
+  "updated_utc": "2026-11-24T00:31Z",
   "errors": []
  },
  "market": {
-  "updated_utc": "2026-11-24T00:16Z",
+  "updated_utc": "2026-11-24T00:31Z",
   "errors": []
  }
 }
