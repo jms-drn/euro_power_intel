@@ -1,6 +1,7 @@
 // Shared pieces for the Spain pages: number formats, headline block, the
-// Base class used by the analysis tabs (period picker, settings, address
-// and shared period), simple statistics and a scatter/heat-map helper.
+// tidy card grid, the Base class used by the analysis tabs (period picker,
+// settings, address and shared period), simple statistics and a
+// scatter/heat-map helper.
 // Code note: no asterisks here (chat formatting strips them when pasted).
 import { bindPeriod } from "./market-common.js";
 import { copyText, fmtNumber, toWall, writeHash } from "./util.js";
@@ -14,7 +15,31 @@ export const eur = v => (v == null || !Number.isFinite(v) ? "–" : "€" + fmtN
 export const signed = (v, f) => (v == null || !Number.isFinite(v) ? "–" : (v >= 0 ? "+" : "−") + f(Math.abs(v)));
 export const meanOf = vs => { const f = vs.filter(v => v != null && Number.isFinite(v)); return f.length ? f.reduce((a, b) => a + b, 0) / f.length : null; };
 export const sumOf = vs => vs.filter(v => v != null && Number.isFinite(v)).reduce((a, b) => a + b, 0);
-export const cards = list => `<div class="es-cards">${list.join("")}</div>`;
+
+// Card grid for every Spain page: equal-width cards, the figure in tabular
+// numbers, and one detail line (longer details are trimmed, with the full
+// text on hover). Styles are added once, the first time a grid is drawn.
+const CARD_CSS = `
+  .es-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:4px 0 16px}
+  .es-cards .card{min-width:0;display:flex;flex-direction:column;gap:4px}
+  .es-cards .card .label{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .es-cards .card .value{font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .es-cards .card .detail{font-size:12px;color:var(--text-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:1.3em}
+  .es-card-link{color:inherit;text-decoration:none;min-width:0}
+  .es-card-link .card{height:100%}`;
+let styled = false;
+function addCardStyles() {
+  if (styled || typeof document === "undefined") return;
+  const el = document.createElement("style");
+  el.textContent = CARD_CSS;
+  document.head.appendChild(el);
+  styled = true;
+}
+export const cards = list => {
+  addCardStyles();
+  const html = list.join("").replace(/<div class="detail">([^<]{30,})<\/div>/g, (all, text) => `<div class="detail" title="${text.replace(/"/g, "&quot;")}">${text}</div>`);
+  return `<div class="es-cards">${html}</div>`;
+};
 export const linkCard = (href, html) => `<a class="es-card-link" href="${href}">${html}</a>`;
 export const localHour = t => new Date(toWall(t)).getUTCHours();
 export const quantile = (sorted, q) => (sorted.length ? sorted.at(Math.min(sorted.length - 1, Math.max(0, Math.floor(mul(q, sorted.length - 1))))) : null);
