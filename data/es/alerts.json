@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-11-24T19:33Z",
+ "generated_utc": "2026-11-24T19:47Z",
  "alerts": [
   {
    "id": "es-base-hi-2026-11-24",
@@ -8,6 +8,102 @@
    "title": "Spanish baseload 210.13 €/MWh",
    "detail": "24 Nov 2026: highest since 11 Nov 2026.",
    "link": "es/prices/explorer"
+  },
+  {
+   "id": "es-basin-cantabricooccidental-lo-2026-11-24",
+   "date": "2026-11-24",
+   "level": "since",
+   "title": "Cantábrico Occidental reservoirs 49.7% full",
+   "detail": "MITECO bulletin of 24 Nov 2026: emptiest for the time of year since 1988.",
+   "link": "es/hydro/map"
+  },
+  {
+   "id": "es-basin-cantabricooriental-lo-2026-11-24",
+   "date": "2026-11-24",
+   "level": "since",
+   "title": "Cantábrico Oriental reservoirs 47.9% full",
+   "detail": "MITECO bulletin of 24 Nov 2026: emptiest for the time of year since 2006.",
+   "link": "es/hydro/map"
+  },
+  {
+   "id": "es-basin-cuencamediterraneaandaluza-hi-2026-11-24",
+   "date": "2026-11-24",
+   "level": "since",
+   "title": "Cuenca Mediterránea Andaluza reservoirs 62.1% full",
+   "detail": "MITECO bulletin of 24 Nov 2026: fullest for the time of year since 2018.",
+   "link": "es/hydro/map"
+  },
+  {
+   "id": "es-basin-cuencasinternasdecataluna-hi-2026-11-24",
+   "date": "2026-11-24",
+   "level": "since",
+   "title": "Cuencas Internas de Cataluña reservoirs 78.1% full",
+   "detail": "MITECO bulletin of 24 Nov 2026: fullest for the time of year since 2020.",
+   "link": "es/hydro/map"
+  },
+  {
+   "id": "es-basin-galiciacosta-lo-2026-11-24",
+   "date": "2026-11-24",
+   "level": "since",
+   "title": "Galicia Costa reservoirs 48.5% full",
+   "detail": "MITECO bulletin of 24 Nov 2026: emptiest for the time of year since 2017.",
+   "link": "es/hydro/map"
+  },
+  {
+   "id": "es-basin-guadaletebarbate-hi-2026-11-24",
+   "date": "2026-11-24",
+   "level": "since",
+   "title": "Guadalete-Barbate reservoirs 74.5% full",
+   "detail": "MITECO bulletin of 24 Nov 2026: fullest for the time of year since 2013.",
+   "link": "es/hydro/map"
+  },
+  {
+   "id": "es-basin-guadalquivir-hi-2026-11-24",
+   "date": "2026-11-24",
+   "level": "since",
+   "title": "Guadalquivir reservoirs 69.2% full",
+   "detail": "MITECO bulletin of 24 Nov 2026: fullest for the time of year since 2014.",
+   "link": "es/hydro/map"
+  },
+  {
+   "id": "es-basin-guadiana-hi-2026-11-24",
+   "date": "2026-11-24",
+   "level": "since",
+   "title": "Guadiana reservoirs 73.0% full",
+   "detail": "MITECO bulletin of 24 Nov 2026: fullest for the time of year since 2014.",
+   "link": "es/hydro/map"
+  },
+  {
+   "id": "es-basin-jucar-hi-2026-11-24",
+   "date": "2026-11-24",
+   "level": "record",
+   "title": "Júcar reservoirs 52.5% full",
+   "detail": "MITECO bulletin of 24 Nov 2026: fullest for the time of year since records began in 1988.",
+   "link": "es/hydro/map"
+  },
+  {
+   "id": "es-basin-segura-hi-2026-11-24",
+   "date": "2026-11-24",
+   "level": "since",
+   "title": "Segura reservoirs 45.8% full",
+   "detail": "MITECO bulletin of 24 Nov 2026: fullest for the time of year since 2014.",
+   "link": "es/hydro/map"
+  },
+  {
+   "id": "es-res-move-136-2026-11-24",
+   "date": "2026-11-24",
+   "level": "event",
+   "title": "Fervenza reservoir up 17 points in a week",
+   "detail": "MITECO bulletin of 24 Nov 2026: Galicia Costa, 103 hm³, now 52% full.",
+   "link": "es/hydro/map"
+  },
+  {
+   "id": "es-res-move-96-2026-11-24",
+   "date": "2026-11-24",
+   "level": "event",
+   "title": "Cernadilla reservoir up 12 points in a week",
+   "detail": "MITECO bulletin of 24 Nov 2026: Duero, 255 hm³, now 29% full.",
+   "link": "es/hydro/map"
   },
   {
    "id": "es-base-hi-2026-11-23",
@@ -119,30 +215,6 @@
    "level": "since",
    "title": "Segura reservoirs 46.5% full",
    "detail": "MITECO bulletin of 17 Nov 2026: fullest for the time of year since 2014.",
-   "link": "es/hydro/map"
-  },
-  {
-   "id": "es-res-move-286-2026-11-17",
-   "date": "2026-11-17",
-   "level": "event",
-   "title": "Santa Teresa reservoir up 24 points in a week",
-   "detail": "MITECO bulletin of 17 Nov 2026: Duero, 496 hm³, now 68% full.",
-   "link": "es/hydro/map"
-  },
-  {
-   "id": "es-res-move-402-2026-11-17",
-   "date": "2026-11-17",
-   "level": "event",
-   "title": "Irueña reservoir up 12 points in a week",
-   "detail": "MITECO bulletin of 17 Nov 2026: Duero, 110 hm³, now 58% full.",
-   "link": "es/hydro/map"
-  },
-  {
-   "id": "es-res-move-150-2026-11-17",
-   "date": "2026-11-17",
-   "level": "event",
-   "title": "Gabriel y Galán reservoir up 11 points in a week",
-   "detail": "MITECO bulletin of 17 Nov 2026: Tajo, 911 hm³, now 49% full.",
    "link": "es/hydro/map"
   }
  ]
