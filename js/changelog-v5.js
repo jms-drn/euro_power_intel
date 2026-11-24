@@ -2,7 +2,36 @@
 // entries, then every earlier release from changelog.js. Newest first.
 import { CHANGELOG as EARLIER } from "./changelog.js";
 
-export const VERSION = "5.2";
+export const VERSION = "5.3";
+
+const V53 = {
+  version: "5.3",
+  date: "Nov 2026",
+  title: "Spain: a Hydro overview at a glance, and a smoother, quicker site",
+  sections: [
+    {
+      heading: "New: Spain → Hydro → Overview",
+      items: [
+        "The first Hydro tab: every river basin on a map, with hydroelectric reserves, hydro output for the past week, month and year, and inflow, each against the 5- and 10-year norms, and a two-sentence summary ready to copy.",
+        "Shade the basins by water % full, hydroelectric energy % full, energy (GWh) or volume (hm³), against the 5- or 10-year average, last year or last week, in points, % difference or level. Each side of the colour scale is scaled on its own, so one extreme basin no longer washes out the rest.",
+        "A date slider back to January 1988: step through any weekly bulletin with the buttons or the ← → keys.",
+        "A compact basin list beside the map, lowest first, with each basin's trend over the last 12 weekly bulletins. Click a basin, on the map or in the list, for its year, largest reservoirs, river flows and biggest weekly moves.",
+        "Rainfall so far this year or week by week against the seasonal norm, with each area's week and year-to-date as a % of normal. Reservoir uses are now in English."
+      ]
+    },
+    {
+      heading: "A smoother site",
+      items: [
+        "Pages and tabs fade in, charts ease into place when you change a setting, card figures count up on arrival, and grey placeholders show while data loads. All movement switches off if your system is set to reduce motion.",
+        "Quick search: press Ctrl+K or /, or use Search in the header, to jump to any page, tab or Spanish basin.",
+        "Keyboard shortcuts: 1 to 9 switch tabs; ← → step the Hydro date slider.",
+        "A breadcrumb above each page, a Copy link button that opens exactly the view on screen, and dots in the Spain sidebar when there are new prices or a new reservoir bulletin since your last visit.",
+        "On Spain pages, the controls stay pinned under the header as you scroll, long pages have an “On this page” row to jump between sections, and any panel can be folded away (the site remembers).",
+        "Better layouts on phones: two cards a row, wrapping controls and a full-width date slider."
+      ]
+    }
+  ]
+};
 
 const V52 = {
   version: "5.2",
@@ -103,4 +132,4 @@ const V50 = {
   ]
 };
 
-export const CHANGELOG = [V52, V51, V50, ...EARLIER];
+export const CHANGELOG = [V53, V52, V51, V50, ...EARLIER];
