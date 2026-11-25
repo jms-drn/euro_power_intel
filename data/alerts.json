@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-11-25T23:31Z",
+ "generated_utc": "2026-11-25T23:46Z",
  "alerts": [
   {
    "id": "fr_base-high-since-2026-11-26",
@@ -14,7 +14,7 @@
    "date": "2026-11-25",
    "level": "since",
    "title": "Highest demand (daily average) since 19 Feb 2026",
-   "detail": "62.7 GW on 25 Nov 2026.",
+   "detail": "62.6 GW on 25 Nov 2026.",
    "link": "demand/explorer"
   }
  ]
