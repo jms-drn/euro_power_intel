@@ -1,6 +1,14 @@
 {
- "generated_utc": "2026-11-25T22:47Z",
+ "generated_utc": "2026-11-25T23:02Z",
  "alerts": [
+  {
+   "id": "es-peak-hi-2026-11-25",
+   "date": "2026-11-25",
+   "level": "since",
+   "title": "Spanish demand peak 36.6 GW",
+   "detail": "25 Nov 2026: highest since 25 Sep 2026.",
+   "link": "es/demand/explorer"
+  },
   {
    "id": "es-base-hi-2026-11-24",
    "date": "2026-11-24",
@@ -136,94 +144,6 @@
    "title": "Negative Spanish prices 22 Nov 2026",
    "detail": "3.25 hours below zero, lowest -0.30 €/MWh.",
    "link": "es/prices/negative"
-  },
-  {
-   "id": "es-base-hi-2026-11-21",
-   "date": "2026-11-21",
-   "level": "since",
-   "title": "Spanish baseload 148.44 €/MWh",
-   "detail": "21 Nov 2026: highest since 14 Nov 2026.",
-   "link": "es/prices/explorer"
-  },
-  {
-   "id": "es-basin-cantabricooccidental-lo-2026-11-17",
-   "date": "2026-11-17",
-   "level": "record",
-   "title": "Cantábrico Occidental reservoirs 48.0% full",
-   "detail": "MITECO bulletin of 17 Nov 2026: emptiest for the time of year since records began in 1988.",
-   "link": "es/hydro/map"
-  },
-  {
-   "id": "es-basin-cantabricooriental-lo-2026-11-17",
-   "date": "2026-11-17",
-   "level": "since",
-   "title": "Cantábrico Oriental reservoirs 47.9% full",
-   "detail": "MITECO bulletin of 17 Nov 2026: emptiest for the time of year since 2006.",
-   "link": "es/hydro/map"
-  },
-  {
-   "id": "es-basin-cuencamediterraneaandaluza-hi-2026-11-17",
-   "date": "2026-11-17",
-   "level": "since",
-   "title": "Cuenca Mediterránea Andaluza reservoirs 62.4% full",
-   "detail": "MITECO bulletin of 17 Nov 2026: fullest for the time of year since 2018.",
-   "link": "es/hydro/map"
-  },
-  {
-   "id": "es-basin-cuencasinternasdecataluna-hi-2026-11-17",
-   "date": "2026-11-17",
-   "level": "since",
-   "title": "Cuencas Internas de Cataluña reservoirs 77.4% full",
-   "detail": "MITECO bulletin of 17 Nov 2026: fullest for the time of year since 2020.",
-   "link": "es/hydro/map"
-  },
-  {
-   "id": "es-basin-galiciacosta-lo-2026-11-17",
-   "date": "2026-11-17",
-   "level": "since",
-   "title": "Galicia Costa reservoirs 43.7% full",
-   "detail": "MITECO bulletin of 17 Nov 2026: emptiest for the time of year since 2017.",
-   "link": "es/hydro/map"
-  },
-  {
-   "id": "es-basin-guadaletebarbate-hi-2026-11-17",
-   "date": "2026-11-17",
-   "level": "since",
-   "title": "Guadalete-Barbate reservoirs 74.3% full",
-   "detail": "MITECO bulletin of 17 Nov 2026: fullest for the time of year since 2013.",
-   "link": "es/hydro/map"
-  },
-  {
-   "id": "es-basin-guadalquivir-hi-2026-11-17",
-   "date": "2026-11-17",
-   "level": "since",
-   "title": "Guadalquivir reservoirs 69.1% full",
-   "detail": "MITECO bulletin of 17 Nov 2026: fullest for the time of year since 2014.",
-   "link": "es/hydro/map"
-  },
-  {
-   "id": "es-basin-guadiana-hi-2026-11-17",
-   "date": "2026-11-17",
-   "level": "since",
-   "title": "Guadiana reservoirs 72.3% full",
-   "detail": "MITECO bulletin of 17 Nov 2026: fullest for the time of year since 2014.",
-   "link": "es/hydro/map"
-  },
-  {
-   "id": "es-basin-jucar-hi-2026-11-17",
-   "date": "2026-11-17",
-   "level": "record",
-   "title": "Júcar reservoirs 52.3% full",
-   "detail": "MITECO bulletin of 17 Nov 2026: fullest for the time of year since records began in 1988.",
-   "link": "es/hydro/map"
-  },
-  {
-   "id": "es-basin-segura-hi-2026-11-17",
-   "date": "2026-11-17",
-   "level": "since",
-   "title": "Segura reservoirs 46.5% full",
-   "detail": "MITECO bulletin of 17 Nov 2026: fullest for the time of year since 2014.",
-   "link": "es/hydro/map"
   }
  ]
 }
