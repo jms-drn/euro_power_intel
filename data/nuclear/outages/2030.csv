@@ -1,0 +1,2 @@
+id,unit,type,reason,status,start_utc,end_utc,first_start_utc,first_end_utc,start_end_utc,first_pub_utc,last_pub_utc,versions,off_mw,cap_mw,remark
+EDF-05470_EDF_T_00315700,FLAMANVILLE 1,planned,COMPLEMENTARY_INFORMATION,ACTIVE,2030-02-01T23:00Z,2030-03-13T23:00Z,2029-09-28T22:00Z,2029-11-07T23:00Z,2030-03-13T23:00Z,2026-09-28T22:02Z,2026-11-26T12:47Z,2,1330,1330,"After its restart, the plant will gradually return by various load thresholds to full power. The ramp-up period will take at least 48 hours."
