@@ -1728,3 +1728,6 @@ Baisse à 570 MW : (30min) - palier à 570 MW : (1h)  - baisse jusqu'à décou
 Unit Ramping down before outage
 Ramp down to 570 MW : (30 min)  - threshold at 570 MW : (1h)  - ramp down until decoupling."
 EDF-05470_EDF_T_00344976,1,2026-11-26T17:29Z,17W100P100P0118M,CRUAS 3,915,PLANNED,FORESEEN_MAINTENANCE,ACTIVE,2026-11-27T08:30Z,2026-12-03T05:00Z,2026-11-27T08:30Z/2026-12-03T05:00Z/0/915,-
+EDF-05470_EDF_T_00344509,2,2026-11-26T17:35Z,17W100P100P0105V,CATTENOM 4,1300,PLANNED,COMPLEMENTARY_INFORMATION,ACTIVE,2026-11-27T14:20Z,2026-11-27T16:40Z,2026-11-27T14:20Z/2026-11-27T16:40Z/650/650,"Essai programmé. La remontée à puissance maximale prendra 2 heures et 20 minutes..
+--------
+Planned test. The unit will return to full load in 2 hours and 20 minutes."
