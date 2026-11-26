@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-11-26T22:46Z",
+ "generated_utc": "2026-11-26T23:01Z",
  "alerts": [
   {
    "id": "fr_base-high-since-2026-11-27",
@@ -8,6 +8,30 @@
    "title": "Highest French day-ahead baseload since 10 Nov 2026",
    "detail": "\u20ac299.05/MWh on 27 Nov 2026.",
    "link": "prices/explorer?subject=FR&measure=base"
+  },
+  {
+   "id": "nuclear_out-high-since-2026-11-26",
+   "date": "2026-11-26",
+   "level": "since",
+   "title": "Highest nuclear output (daily average) since 2 Apr 2026",
+   "detail": "45.2 GW on 26 Nov 2026.",
+   "link": "generation/explorer?subject=nuclear"
+  },
+  {
+   "id": "hydro-high-since-2026-11-26",
+   "date": "2026-11-26",
+   "level": "since",
+   "title": "Highest hydro output (daily average) since 18 May 2026",
+   "detail": "8.6 GW on 26 Nov 2026.",
+   "link": "generation/explorer?subject=hydro"
+  },
+  {
+   "id": "demand-high-since-2026-11-26",
+   "date": "2026-11-26",
+   "level": "since",
+   "title": "Highest demand (daily average) since 18 Feb 2026",
+   "detail": "63.7 GW on 26 Nov 2026.",
+   "link": "demand/explorer"
   },
   {
    "id": "nuc-delay-EC-EDF-05470-EDF-T-00128685-7",
@@ -128,14 +152,6 @@
    "title": "Return pushed back 7 days: Gravelines 2",
    "detail": "Now due back 2029-05-18 (was 2029-05-11).",
    "link": "nuclear/today"
-  },
-  {
-   "id": "demand-high-since-2026-11-25",
-   "date": "2026-11-25",
-   "level": "since",
-   "title": "Highest demand (daily average) since 19 Feb 2026",
-   "detail": "62.6 GW on 25 Nov 2026.",
-   "link": "demand/explorer"
   }
  ]
 }
