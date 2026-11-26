@@ -1,6 +1,14 @@
 {
- "generated_utc": "2026-11-26T12:04Z",
+ "generated_utc": "2026-11-26T12:19Z",
  "alerts": [
+  {
+   "id": "es-base-hi-2026-11-27",
+   "date": "2026-11-27",
+   "level": "since",
+   "title": "Spanish baseload 221.92 €/MWh tomorrow",
+   "detail": "27 Nov 2026: highest since 7 Nov 2026.",
+   "link": "es/prices/explorer"
+  },
   {
    "id": "es-peak-hi-2026-11-25",
    "date": "2026-11-25",
