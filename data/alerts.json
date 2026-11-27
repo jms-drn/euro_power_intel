@@ -1,6 +1,14 @@
 {
- "generated_utc": "2026-11-27T17:01Z",
+ "generated_utc": "2026-11-27T17:16Z",
  "alerts": [
+  {
+   "id": "nuc-delay-EC-EDF-05470-EDF-T-00104261-10",
+   "date": "2026-11-27",
+   "level": "event",
+   "title": "Return pushed back 58 days: Cattenom 3",
+   "detail": "Now due back 2027-01-31 (was 2026-12-04).",
+   "link": "nuclear/today"
+  },
   {
    "id": "nuclear_out-high-since-2026-11-26",
    "date": "2026-11-26",

@@ -1798,3 +1798,8 @@ Prochain palier : 905 MW
 Unit is currently ramping up by steps
 Next step : 905 MW"
 EDF-05470_EDF_T_00344873,3,2026-11-27T16:16Z,17W100P100P0139E,PALUEL 1,1330,PLANNED,FORESEEN_MAINTENANCE,DISMISSED,2026-11-28T06:00Z,2026-11-28T07:30Z,2026-11-28T06:00Z/2026-11-28T07:30Z/1227/103,-
+EC-EDF-05470-EDF-T-00104261,10,2026-11-27T17:01Z,17W100P100P0104X,CATTENOM 3,1300,PLANNED,COMPLEMENTARY_INFORMATION,ACTIVE,2026-09-25T21:00Z,2027-01-31T22:00Z,2026-09-25T21:00Z/2027-01-31T22:00Z/0/1300,"After its restart, the plant will gradually return by various load thresholds to full power. The ramp-up period will take at least 48 hours.
+Outage likely to be extended
+-------------------------------------
+Après son recouplage, la tranche remontera progressivement par palier de charge à sa pleine puissance. La remontée durera au moins 48h.
+Arrêt susceptible de se prolonger"
