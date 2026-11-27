@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-11-27T12:46Z",
+ "generated_utc": "2026-11-27T13:01Z",
  "alerts": [
   {
    "id": "nuclear_out-high-since-2026-11-26",
@@ -24,110 +24,6 @@
    "title": "Highest demand (daily average) since 18 Feb 2026",
    "detail": "63.7 GW on 26 Nov 2026.",
    "link": "demand/explorer"
-  },
-  {
-   "id": "nuc-delay-EC-EDF-05470-EDF-T-00128685-7",
-   "date": "2026-11-26",
-   "level": "event",
-   "title": "Return pushed back 28 days: Belleville 2",
-   "detail": "Now due back 2027-09-19 (was 2027-08-22).",
-   "link": "nuclear/today"
-  },
-  {
-   "id": "nuc-delay-EC-EDF-05470-EDF-T-00152262-6",
-   "date": "2026-11-26",
-   "level": "event",
-   "title": "Return pushed back 9 days: Bugey 2",
-   "detail": "Now due back 2027-11-22 (was 2027-11-13).",
-   "link": "nuclear/today"
-  },
-  {
-   "id": "nuc-delay-EDF-05470_EDF_T_00209969-5",
-   "date": "2026-11-26",
-   "level": "event",
-   "title": "Return pushed back 9 days: Bugey 3",
-   "detail": "Now due back 2028-05-23 (was 2028-05-14).",
-   "link": "nuclear/today"
-  },
-  {
-   "id": "nuc-delay-EDF-05470_EDF_T_00265418-3",
-   "date": "2026-11-26",
-   "level": "event",
-   "title": "Return pushed back 21 days: Belleville 2",
-   "detail": "Now due back 2029-08-17 (was 2029-07-27).",
-   "link": "nuclear/today"
-  },
-  {
-   "id": "nuc-delay-EDF-05470_EDF_T_00315700-2",
-   "date": "2026-11-26",
-   "level": "event",
-   "title": "Return pushed back 126 days: Flamanville 1",
-   "detail": "Now due back 2030-03-13 (was 2029-11-07).",
-   "link": "nuclear/today"
-  },
-  {
-   "id": "nuc-delay-EC-EDF-05470-EDF-T-00128709-5",
-   "date": "2026-11-26",
-   "level": "event",
-   "title": "Return pushed back 21 days: Flamanville 2",
-   "detail": "Now due back 2027-11-18 (was 2027-10-28).",
-   "link": "nuclear/today"
-  },
-  {
-   "id": "nuc-delay-EC-EDF-05470-EDF-T-00135644-6",
-   "date": "2026-11-26",
-   "level": "event",
-   "title": "Return pushed back 63 days: Cattenom 4",
-   "detail": "Now due back 2027-12-08 (was 2027-10-06).",
-   "link": "nuclear/today"
-  },
-  {
-   "id": "nuc-delay-EC-EDF-05470-EDF-T-00152294-5",
-   "date": "2026-11-26",
-   "level": "event",
-   "title": "Return pushed back 13 days: Golfech 1",
-   "detail": "Now due back 2028-05-17 (was 2028-05-04).",
-   "link": "nuclear/today"
-  },
-  {
-   "id": "nuc-delay-EC-EDF-05470-EDF-T-00187690-3",
-   "date": "2026-11-26",
-   "level": "event",
-   "title": "Return pushed back 28 days: Cattenom 3",
-   "detail": "Now due back 2028-05-28 (was 2028-04-30).",
-   "link": "nuclear/today"
-  },
-  {
-   "id": "nuc-delay-EDF-05470_EDF_T_00210005-3",
-   "date": "2026-11-26",
-   "level": "event",
-   "title": "Return pushed back 21 days: Flamanville 1",
-   "detail": "Now due back 2028-10-01 (was 2028-09-10).",
-   "link": "nuclear/today"
-  },
-  {
-   "id": "nuc-delay-EDF-05470_EDF_T_00235671-4",
-   "date": "2026-11-26",
-   "level": "event",
-   "title": "Return pushed back 21 days: Chooz 1",
-   "detail": "Now due back 2028-11-01 (was 2028-10-11).",
-   "link": "nuclear/today"
-  },
-  {
-   "id": "nuc-delay-EDF-05470_EDF_T_00277516-2",
-   "date": "2026-11-26",
-   "level": "event",
-   "title": "Return pushed back 7 days: Cattenom 4",
-   "detail": "Now due back 2029-06-18 (was 2029-06-11).",
-   "link": "nuclear/today"
-  },
-  {
-   "id": "nuc-delay-EDF-05470_EDF_T_00277519-2",
-   "date": "2026-11-26",
-   "level": "event",
-   "title": "Return pushed back 7 days: Chooz 2",
-   "detail": "Now due back 2029-09-17 (was 2029-09-10).",
-   "link": "nuclear/today"
   }
  ]
 }
