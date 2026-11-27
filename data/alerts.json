@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-11-27T12:31Z",
+ "generated_utc": "2026-11-27T12:46Z",
  "alerts": [
   {
    "id": "nuclear_out-high-since-2026-11-26",
@@ -127,22 +127,6 @@
    "level": "event",
    "title": "Return pushed back 7 days: Chooz 2",
    "detail": "Now due back 2029-09-17 (was 2029-09-10).",
-   "link": "nuclear/today"
-  },
-  {
-   "id": "nuc-delay-EDF-05470_EDF_T_00224217-5",
-   "date": "2026-11-26",
-   "level": "event",
-   "title": "Return pushed back 14 days: Golfech 2",
-   "detail": "Now due back 2028-10-11 (was 2028-09-27).",
-   "link": "nuclear/today"
-  },
-  {
-   "id": "nuc-delay-EDF-05470_EDF_T_00265426-4",
-   "date": "2026-11-26",
-   "level": "event",
-   "title": "Return pushed back 7 days: Gravelines 2",
-   "detail": "Now due back 2029-05-18 (was 2029-05-11).",
    "link": "nuclear/today"
   }
  ]
