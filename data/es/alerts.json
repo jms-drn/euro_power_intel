@@ -1,5 +1,5 @@
 {
- "generated_utc": "2026-11-27T22:49Z",
+ "generated_utc": "2026-11-27T23:01Z",
  "alerts": [
   {
    "id": "es-base-hi-2026-11-27",
@@ -8,6 +8,14 @@
    "title": "Spanish baseload 221.92 €/MWh",
    "detail": "27 Nov 2026: highest since 7 Nov 2026.",
    "link": "es/prices/explorer"
+  },
+  {
+   "id": "es-peak-hi-2026-11-27",
+   "date": "2026-11-27",
+   "level": "since",
+   "title": "Spanish demand peak 36.9 GW",
+   "detail": "27 Nov 2026: highest since 25 Sep 2026.",
+   "link": "es/demand/explorer"
   },
   {
    "id": "es-peak-hi-2026-11-26",
@@ -136,22 +144,6 @@
    "title": "Cernadilla reservoir up 12 points in a week",
    "detail": "MITECO bulletin of 24 Nov 2026: Duero, 255 hm³, now 29% full.",
    "link": "es/hydro/map"
-  },
-  {
-   "id": "es-base-hi-2026-11-23",
-   "date": "2026-11-23",
-   "level": "since",
-   "title": "Spanish baseload 205.20 €/MWh",
-   "detail": "23 Nov 2026: highest since 11 Nov 2026.",
-   "link": "es/prices/explorer"
-  },
-  {
-   "id": "es-peak-hi-2026-11-23",
-   "date": "2026-11-23",
-   "level": "since",
-   "title": "Spanish demand peak 35.0 GW",
-   "detail": "23 Nov 2026: highest since 2 Oct 2026.",
-   "link": "es/demand/explorer"
   }
  ]
 }

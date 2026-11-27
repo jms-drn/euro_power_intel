@@ -1,6 +1,22 @@
 {
- "generated_utc": "2026-11-27T22:46Z",
+ "generated_utc": "2026-11-27T23:00Z",
  "alerts": [
+  {
+   "id": "hydro-high-since-2026-11-27",
+   "date": "2026-11-27",
+   "level": "since",
+   "title": "Highest hydro output (daily average) since 27 Mar 2026",
+   "detail": "9.6 GW on 27 Nov 2026.",
+   "link": "generation/explorer?subject=hydro"
+  },
+  {
+   "id": "demand-high-since-2026-11-27",
+   "date": "2026-11-27",
+   "level": "since",
+   "title": "Highest demand (daily average) since 29 Jan 2026",
+   "detail": "65.5 GW on 27 Nov 2026.",
+   "link": "demand/explorer"
+  },
   {
    "id": "nuc-delay-EC-EDF-05470-EDF-T-00104261-10",
    "date": "2026-11-27",
@@ -8,30 +24,6 @@
    "title": "Return pushed back 58 days: Cattenom 3",
    "detail": "Now due back 2027-01-31 (was 2026-12-04).",
    "link": "nuclear/today"
-  },
-  {
-   "id": "nuclear_out-high-since-2026-11-26",
-   "date": "2026-11-26",
-   "level": "since",
-   "title": "Highest nuclear output (daily average) since 2 Apr 2026",
-   "detail": "45.2 GW on 26 Nov 2026.",
-   "link": "generation/explorer?subject=nuclear"
-  },
-  {
-   "id": "hydro-high-since-2026-11-26",
-   "date": "2026-11-26",
-   "level": "since",
-   "title": "Highest hydro output (daily average) since 18 May 2026",
-   "detail": "8.6 GW on 26 Nov 2026.",
-   "link": "generation/explorer?subject=hydro"
-  },
-  {
-   "id": "demand-high-since-2026-11-26",
-   "date": "2026-11-26",
-   "level": "since",
-   "title": "Highest demand (daily average) since 18 Feb 2026",
-   "detail": "63.7 GW on 26 Nov 2026.",
-   "link": "demand/explorer"
   }
  ]
 }
