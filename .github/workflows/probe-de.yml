@@ -1,0 +1,44 @@
+name: Germany probe (one-off)
+# Start by hand from the Actions tab. Asks ENTSO-E and SMARD what data they
+# hold for Germany and writes probe/out/de_probe_report.md. Read-only for
+# data/. Takes about five minutes. Safe to re-run.
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      ENTSOE_API_KEY: ${{ secrets.ENTSOE_API_KEY }}
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Run the Germany probe
+        run: python scripts/de_probe.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: de-probe
+          path: probe/out
+          retention-days: 14
+      - name: Save the report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add probe/out
+          git diff --cached --quiet && { echo "No changes"; exit 0; }
+          git commit -qm "Germany probe report"
+          for attempt in 1 2 3; do
+            git push origin HEAD:main && exit 0
+            sleep 15
+            git fetch origin main
+            git rebase -X theirs origin/main || { git rebase --abort; exit 1; }
+          done
+          exit 1
